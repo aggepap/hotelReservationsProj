@@ -24,8 +24,6 @@ const handleSubmit = async (data: any) => {
       ReservationService.addReservation(data),
       timeout,
     ]);
-    console.log(result);
-
     submitted.value = true;
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   } catch (error: any) {
@@ -60,11 +58,7 @@ onMounted(() => {
         Add new Reservation
       </h2>
       <hr />
-      <h3
-        class="text-black mt-2 text-xl text-center leading-5 font-semibold mb-8"
-      >
-        Reservation Info
-      </h3>
+      <h3>Reservation Info</h3>
       <div class="flex gap-4">
         <FormKit
           type="date"
@@ -94,14 +88,13 @@ onMounted(() => {
           type="select"
           label="Room"
           name="roomNumber"
-          :options="state.rooms.map((room) => `${room.roomNumber}`)"
+          :options="
+            state.rooms.map(
+              (room) => `${room.roomNumber} (${room.capacity} guests) `
+            )
+          "
         />
       </div>
-      <h3
-        class="text-black mt-2 text-xl text-center leading-5 font-semibold mb-8"
-      >
-        Guest Info
-      </h3>
       <div class="flex gap-4">
         <FormKit
           type="text"
@@ -123,14 +116,14 @@ onMounted(() => {
           type="text"
           name="vat"
           label="VAT Number"
-          validation="number |length:10,10"
+          validation="number| required |length:10,10"
           validation-visibility="blur"
         />
         <FormKit
           type="text"
           name="idNumber"
           label="ID Number"
-          validation="alphanumeric |length:6,15"
+          validation="alphanumeric| required |length:6,15"
           validation-visibility="blur"
         />
       </div>
@@ -345,7 +338,9 @@ onMounted(() => {
         <FormKit
           type="date"
           name="birthDate"
+          value="1999-01-01"
           label="Date of Birth"
+          validation="required"
           validation-visibility="blur"
         />
       </div>

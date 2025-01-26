@@ -1,6 +1,5 @@
 import type { AddRoomData } from "@/interfaces/RoomInterfaces";
 import type { addResidentData } from "@/interfaces/ResidentInterfaces";
-import type { AddReservationData } from "@/interfaces/ReservationInterfaces";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 
@@ -63,7 +62,7 @@ export const ResidentService = {
 };
 
 export const ReservationService = {
-  addReservation: async (reservation: AddReservationData) => {
+  addReservation: async (reservation: Reservation) => {
     const response = await fetch("http://localhost:8080/api/reservations/add", {
       method: "POST",
       headers: {

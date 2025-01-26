@@ -94,7 +94,11 @@ onMounted(() => {
           type="select"
           label="Room"
           name="roomNumber"
-          :options="state.rooms.map((room) => `${room.roomNumber}`)"
+          :options="
+            state.rooms.map(
+              (room) => `${room.roomNumber} (${room.capacity} guests) `
+            )
+          "
         />
       </div>
       <h3

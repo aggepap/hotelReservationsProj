@@ -24,8 +24,6 @@ const handleSubmit = async (data: any) => {
       ReservationService.addReservation(data),
       timeout,
     ]);
-    console.log(result);
-
     submitted.value = true;
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   } catch (error: any) {
@@ -94,7 +92,11 @@ onMounted(() => {
           type="select"
           label="Room"
           name="roomNumber"
-          :options="state.rooms.map((room) => `${room.roomNumber}`)"
+          :options="
+            state.rooms.map(
+              (room) => `${room.roomNumber} (${room.capacity} guests) `
+            )
+          "
         />
       </div>
       <h3
@@ -345,6 +347,7 @@ onMounted(() => {
         <FormKit
           type="date"
           name="birthDate"
+          value="1999-01-01"
           label="Date of Birth"
           validation-visibility="blur"
         />
