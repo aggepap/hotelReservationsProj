@@ -1,8 +1,14 @@
 package org.hotelbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,11 +19,11 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@ToString
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "reservations")
-public class Reservation extends AbstractEntity {
+public class Reservation extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +33,16 @@ public class Reservation extends AbstractEntity {
     private LocalDateTime reservationBookedDate;
     private LocalDate reservationStartDate;
     private LocalDate reservationEndDate;
+    private Integer guestsNumber;
     private Boolean advancePaid;
     private Boolean isActive;
 
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "reservation", fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -39,8 +52,10 @@ public class Reservation extends AbstractEntity {
     @JoinColumn(name="room_id")
     private Room room;
 
+
     public void addRoomToReservation(Room room){
         this.room = room;
+        room.getReservations().add(this);
     }
     public void addResidentToReservation(Resident resident){
         if(residents == null) {

@@ -10,8 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomInsertDTO {
-    private Integer roomNumber;
-    private Integer floor;
+    private String roomNumber;
+    private String floor;
     private Integer capacity;
     private Boolean hasSeaView;
 }

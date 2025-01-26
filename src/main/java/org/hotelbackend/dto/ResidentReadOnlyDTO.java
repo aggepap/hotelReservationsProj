@@ -8,6 +8,7 @@ import org.hotelbackend.core.Gender;
 import org.hotelbackend.model.Reservation;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,8 +22,12 @@ public class ResidentReadOnlyDTO {
     private String vat;
     private String idNumber;
     private LocalDate birthDate;
-    private CountryCode countryCode;
-    private Gender gender;
+    private String countryCode;
+    private String address;
+    private String email;
+    private String phoneNumber;
+    private String gender;
     private Boolean isAdult;
+    private String roomNumber;
     private Reservation reservation;
 }

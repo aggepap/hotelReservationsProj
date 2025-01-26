@@ -1,6 +1,8 @@
 package org.hotelbackend.repository;
 
 import com.speedment.jpastreamer.application.JPAStreamer;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -12,7 +14,7 @@ import org.hotelbackend.dto.ResidentReadOnlyDTO;
 import org.hotelbackend.model.Resident;
 
 @ApplicationScoped
-public class ResidentRepository {
+public class ResidentRepository implements PanacheRepositoryBase<Resident,Long> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -23,11 +25,16 @@ public class ResidentRepository {
 
 
     @Transactional
-    public ResidentReadOnlyDTO addResident(ResidentInsertDTO dto){
-        Resident insertedResident = new Resident(null, dto.getFirstname(), dto.getLastname(), dto.getVat(),
-                dto.getIdNumber(),dto.getBirthDate(),dto.getCountryCode(),
-                dto.getGender(),null, null);
-        this.entityManager.persist(insertedResident);
-        return mapper.mapToResidentReadOnlyDTO(insertedResident);
+    public Resident addResident(ResidentInsertDTO dto){
+        Resident insertedResident = mapper.mapToResidentEntity(dto);
+        insertedResident.persist();
+        return insertedResident;
+    }
+
+    public Resident findByVat(String vat){
+        return find("vat",vat).firstResult();
+    }
+    public Resident findByIdNumber(String idNumber){
+        return find("idNumber",idNumber).firstResult();
     }
 }

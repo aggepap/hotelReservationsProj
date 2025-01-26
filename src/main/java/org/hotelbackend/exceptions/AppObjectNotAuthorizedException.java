@@ -1,4 +1,4 @@
-package gr.nifitsas.dealsapp.core.exceptions;
+package org.hotelbackend.exceptions;
 
 public class AppObjectNotAuthorizedException extends AppGenericException {
 

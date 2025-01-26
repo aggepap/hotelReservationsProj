@@ -2,6 +2,7 @@ package org.hotelbackend.model;
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.SetAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
 
@@ -11,14 +12,24 @@ public abstract class Room_ {
 
 	
 	/**
+	 * @see org.hotelbackend.model.Room#isAvailable
+	 **/
+	public static volatile SingularAttribute<Room, Boolean> isAvailable;
+	
+	/**
 	 * @see org.hotelbackend.model.Room#roomNumber
 	 **/
-	public static volatile SingularAttribute<Room, Integer> roomNumber;
+	public static volatile SingularAttribute<Room, String> roomNumber;
 	
 	/**
 	 * @see org.hotelbackend.model.Room#hasSeaView
 	 **/
 	public static volatile SingularAttribute<Room, Boolean> hasSeaView;
+	
+	/**
+	 * @see org.hotelbackend.model.Room#reservations
+	 **/
+	public static volatile SetAttribute<Room, Reservation> reservations;
 	
 	/**
 	 * @see org.hotelbackend.model.Room#id
@@ -28,7 +39,7 @@ public abstract class Room_ {
 	/**
 	 * @see org.hotelbackend.model.Room#floor
 	 **/
-	public static volatile SingularAttribute<Room, Integer> floor;
+	public static volatile SingularAttribute<Room, String> floor;
 	
 	/**
 	 * @see org.hotelbackend.model.Room
@@ -40,8 +51,10 @@ public abstract class Room_ {
 	 **/
 	public static volatile SingularAttribute<Room, Integer> capacity;
 
+	public static final String IS_AVAILABLE = "isAvailable";
 	public static final String ROOM_NUMBER = "roomNumber";
 	public static final String HAS_SEA_VIEW = "hasSeaView";
+	public static final String RESERVATIONS = "reservations";
 	public static final String ID = "id";
 	public static final String FLOOR = "floor";
 	public static final String CAPACITY = "capacity";

@@ -9,8 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 public class RoomReadOnlyDTO {
     private Long id;
-    private Integer roomNumber;
-    private Integer floor;
+    private String roomNumber;
+    private String floor;
     private Integer capacity;
     private Boolean hasSeaView;
+    private Boolean isAvailable;
 }

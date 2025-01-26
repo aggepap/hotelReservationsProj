@@ -1,6 +1,7 @@
 package org.hotelbackend.repository;
 
 import com.speedment.jpastreamer.application.JPAStreamer;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class ReservationRepository {
+public class ReservationRepository implements  PanacheRepositoryBase<Reservation,Long> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -27,20 +28,18 @@ public class ReservationRepository {
 
 
     @Transactional
-    public ReservationReadOnlyDTO addReservation(ReservationInsertDTO dto){
-        Reservation insertedReservation = new Reservation(null, null, dto.getReservationBookedDate(),
-                dto.getReservationStartDate(),dto.getReservationEndDate(),
-                dto.getAdvancePaid(),true, null, null);
-        this.entityManager.persist(insertedReservation);
-        return mapper.mapToReservationReadOnlyDTO(insertedReservation);
+    public Reservation addReservation(ReservationInsertDTO dto){
+        Reservation insertedReservation = new Reservation();
+        insertedReservation.setReservationStartDate(dto.getReservationStartDate());
+        insertedReservation.setReservationEndDate(dto.getReservationEndDate());
+        insertedReservation.setGuestsNumber(dto.getGuestsNumber());
+        insertedReservation.persist();
+        return insertedReservation;
     }
 
 
-    public Optional<ReservationReadOnlyDTO> getReservationByResCode(String reservationCode){
-        return jpaStreamer.stream(Reservation.class)
-                .filter(reservation -> reservation.getReservationCode().equals(reservationCode))
-                .findFirst()
-                .map(mapper::mapToReservationReadOnlyDTO);
+    public Reservation getReservationByResCode(String reservationCode){
+        return find("reservationCode",reservationCode).firstResult();
     }
 
     public List<ReservationReadOnlyDTO> getReservationsByRoomAndDates(Integer roomNumber, LocalDate startDate, LocalDate endDate){

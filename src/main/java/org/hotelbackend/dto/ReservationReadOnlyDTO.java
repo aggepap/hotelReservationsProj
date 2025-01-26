@@ -19,6 +19,7 @@ public class ReservationReadOnlyDTO {
     private LocalDateTime reservationBookedDate;
     private LocalDate reservationStartDate;
     private LocalDate reservationEndDate;
+    private Integer guestsNumber;
     private Boolean advancePaid;
     private Boolean isActive;
     private Long roomId;
