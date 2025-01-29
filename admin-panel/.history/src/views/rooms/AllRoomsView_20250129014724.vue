@@ -75,7 +75,7 @@ const fetchRooms = async (pageIndex: number, pageSize: number) => {
     Hotel Rooms
   </h2>
   <section
-    class="w-9/12 mx-auto px-10 h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-10"
+    class="w-9/12 mx-auto px-10 h-full grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-10"
   >
     <div v-for="room in state.rooms" :key="room.roomNumber" :room="room">
       <div

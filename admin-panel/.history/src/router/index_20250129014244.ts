@@ -38,7 +38,7 @@ const router = createRouter({
     {
       path: "/reservations",
       name: "AllReservations",
-      component: AllReservationsView,
+      component: AddReservationView,
     },
     {
       path: "/reservations/add",

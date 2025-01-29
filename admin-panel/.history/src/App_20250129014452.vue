@@ -199,7 +199,7 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
                 >
                   <FontAwesomeIcon
                     class="text-gray-600 text-2xl"
-                    :icon="faFile"
+                    :icon="faPlus"
                   />
                   All Reservations</RouterLink
                 >
@@ -222,7 +222,7 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
       </div>
     </aside>
 
-    <main class="flex items-start h-screen w-full px-4 md:pl-64">
+    <main class="flex items-start h-screen w-full pl-64">
       <div class="mx-auto w-full md:p-6 bg-gray-300 pt-12">
         <RouterView />
       </div>

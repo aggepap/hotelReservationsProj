@@ -7,7 +7,6 @@ import { faBed } from "@fortawesome/free-solid-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
-import { faFile } from "@fortawesome/free-solid-svg-icons";
 </script>
 
 <template>
@@ -145,7 +144,7 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
                 >
                   <FontAwesomeIcon
                     class="text-gray-600 text-2xl"
-                    :icon="faUsers"
+                    :icon="faKey"
                   />All Residents</RouterLink
                 >
               </li>
@@ -154,10 +153,7 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
                   to="/residents/add"
                   class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faPlus"
-                  />Add a Resident</RouterLink
+                  <i class="pi pi-plus pt-1"></i> Add a Resident</RouterLink
                 >
               </li>
             </ul>
@@ -194,26 +190,10 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
             <ul id="dropdown-reservations" class="hidden py-2 space-y-2">
               <li>
                 <RouterLink
-                  to="/reservations"
-                  class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faFile"
-                  />
-                  All Reservations</RouterLink
-                >
-              </li>
-              <li>
-                <RouterLink
                   to="/reservations/add"
                   class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faPlus"
-                  />
-                  Add a Reservation</RouterLink
+                  <i class="pi pi-plus pt-1"></i> Add a Reservation</RouterLink
                 >
               </li>
             </ul>
@@ -222,7 +202,7 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
       </div>
     </aside>
 
-    <main class="flex items-start h-screen w-full px-4 md:pl-64">
+    <main class="flex items-start h-screen w-full pl-64">
       <div class="mx-auto w-full md:p-6 bg-gray-300 pt-12">
         <RouterView />
       </div>
