@@ -61,14 +61,8 @@ const fetchReservations = async (
       fromDate,
       toDate
     );
-    state.reservations = response.data.map((reservation) => ({
-      ...reservation,
-      firstResidentLastName:
-        reservation.residents && reservation.residents.length > 0e2
-          ? reservation.residents[0].lastname
-          : "No Name",
-    }));
-    console.log(state.reservations);
+    state.reservations = response.data;
+    console.log(response.data);
   } finally {
     state.loading = false;
   }
@@ -102,7 +96,7 @@ const initFilters = () => {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
-    firstResidentLastName: {
+    residedents: {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
@@ -168,8 +162,8 @@ const handleSubmit = (data: any) => {
           'reservationCode',
           'reservationBookedDate',
           'reservationStartDate',
+          'guestNumber',
           'roomNumber',
-          'firstResidentLastName',
         ]"
       >
         <template #header>
@@ -203,6 +197,13 @@ const handleSubmit = (data: any) => {
           <template #body="{ data }">
             {{ data.reservationCode.slice(0, 13) }}
           </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              placeholder="Search by code"
+            />
+          </template>
         </Column>
         <Column
           field="reservationBookedDate"
@@ -212,6 +213,13 @@ const handleSubmit = (data: any) => {
         >
           <template #body="{ data }">
             {{ formatDate(data.reservationBookedDate) }}
+          </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by Booked date"
+            />
           </template>
         </Column>
         <Column
@@ -223,6 +231,13 @@ const handleSubmit = (data: any) => {
           <template #body="{ data }">
             {{ formatDate(data.reservationStartDate) }}
           </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by Start date"
+            />
+          </template>
         </Column>
         <Column
           field="reservationEndDate"
@@ -233,13 +248,34 @@ const handleSubmit = (data: any) => {
           <template #body="{ data }">
             {{ formatDate(data.reservationEndDate) }}
           </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by end date"
+            />
+          </template>
         </Column>
         <Column
-          field="firstResidentLastName"
+          field="residents"
           sortable
           header="Residents"
           style="min-width: 12rem"
         >
+          <template #body="{ data }">
+            <span>{{
+              data.residents && data.residents.length > 0
+                ? data.residents[0].lastname || "no name"
+                : "no name"
+            }}</span>
+          </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              placeholder="Search by Resident surname"
+            />
+          </template>
         </Column>
         <Column
           field="roomNumber"

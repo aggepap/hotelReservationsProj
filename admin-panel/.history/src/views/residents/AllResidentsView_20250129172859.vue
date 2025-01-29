@@ -10,6 +10,7 @@ import InputText from "primevue/inputtext";
 import InputIcon from "primevue/inputicon";
 import IconField from "primevue/iconfield";
 import CountryFlag from "vue-country-flag-next";
+import { DatePicker } from "primevue";
 
 const filters = ref();
 const initFilters = () => {
@@ -52,19 +53,31 @@ const state = reactive<{
   loading: true,
 });
 
+let pageIndex = 0;
+let pageSize = 300;
 let orderBy = "lastname";
 
 onMounted(() => {
-  fetchCustomers(orderBy);
+  fetchCustomers(pageIndex, pageSize, orderBy);
   console.log(state.residents);
 });
 
-const fetchCustomers = async (orderBy: string) => {
+const fetchCustomers = async (
+  pageIndex: number,
+  pageSize: number,
+  orderBy: string
+) => {
   try {
     state.loading = true;
-    const response = await ResidentService.getResidents(orderBy);
-    state.residents = response;
-    console.log(response);
+    const response = await ResidentService.getResidents(
+      pageIndex,
+      pageSize,
+      orderBy
+    );
+    state.residents = response.data;
+    state.totalCount = response.data.totalCount;
+    state.pagesNumber = Math.ceil(state.totalCount / pageSize);
+    console.log(response.data);
   } catch (error) {
     console.log(error);
   } finally {
@@ -82,6 +95,7 @@ const clearFilter = () => {
   </h2>
   <div class="card">
     <DataTable
+      v-model:filters="filters"
       :value="state.residents"
       paginator
       showGridlines
@@ -170,19 +184,23 @@ const clearFilter = () => {
         </template>
       </Column>
       <Column
-        field="roomNumber"
+        field="countryCode"
         sortable
-        header="Room Number"
+        header="Country"
         style="min-width: 12rem"
       >
         <template #body="{ data }">
-          <span>{{ data.roomNumber }}</span>
+          <div class="flex gap-4 items-end">
+            <country-flag :country="data.countryCode" />
+
+            <span>{{ data.countryCode }}</span>
+          </div>
         </template>
         <template #filter="{ filterModel }">
-          <InputText
+          <DatePicker
             v-model="filterModel.value"
             type="text"
-            placeholder="Search by Room Number"
+            placeholder="Search by Lastname"
           />
         </template>
       </Column>

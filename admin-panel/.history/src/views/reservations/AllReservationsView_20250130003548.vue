@@ -169,7 +169,6 @@ const handleSubmit = (data: any) => {
           'reservationBookedDate',
           'reservationStartDate',
           'roomNumber',
-          'firstResidentLastName',
         ]"
       >
         <template #header>

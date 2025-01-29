@@ -52,19 +52,31 @@ const state = reactive<{
   loading: true,
 });
 
+let pageIndex = 0;
+let pageSize = 300;
 let orderBy = "lastname";
 
 onMounted(() => {
-  fetchCustomers(orderBy);
+  fetchCustomers(pageIndex, pageSize, orderBy);
   console.log(state.residents);
 });
 
-const fetchCustomers = async (orderBy: string) => {
+const fetchCustomers = async (
+  pageIndex: number,
+  pageSize: number,
+  orderBy: string
+) => {
   try {
     state.loading = true;
-    const response = await ResidentService.getResidents(orderBy);
-    state.residents = response;
-    console.log(response);
+    const response = await ResidentService.getResidents(
+      pageIndex,
+      pageSize,
+      orderBy
+    );
+    state.residents = response.data;
+    state.totalCount = response.data.totalCount;
+    state.pagesNumber = Math.ceil(state.totalCount / pageSize);
+    console.log(response.data);
   } catch (error) {
     console.log(error);
   } finally {
@@ -82,6 +94,7 @@ const clearFilter = () => {
   </h2>
   <div class="card">
     <DataTable
+      v-model:filters="filters"
       :value="state.residents"
       paginator
       showGridlines

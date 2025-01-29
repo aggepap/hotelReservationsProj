@@ -56,9 +56,13 @@ export const ResidentService = {
     }
   },
 
-  getResidents: async (sortedBy: string) => {
+  getResidents: async (
+    pageIndex: number,
+    pageSize: number,
+    sortedBy: string
+  ) => {
     const response = await fetch(
-      `http://localhost:8080/api/residents/all?sortedBy=${sortedBy}`
+      `http://localhost:8080/api/residents?page=${pageIndex}&size=${pageSize}&sorteby=${sortedBy}`
     );
     return response.json();
   },
@@ -84,13 +88,15 @@ export const ReservationService = {
     toast.success("Reservation added successfully");
     return response.json();
   },
-  getAllReservations: async (
+  getReservations: async (
+    pageIndex: number,
+    pageSize: number,
     sortedBy: string,
-    fromDate: string,
-    toDate: string
+    fromDate: Date,
+    toDate: Date
   ) => {
     const response = await fetch(
-      `http://localhost:8080/api/reservations/all?sortedBy=${sortedBy}&fromDate=${fromDate}&toDate=${toDate}`
+      `http://localhost:8080/api/reservations?page=${pageIndex}&size=${pageSize}`
     );
     return response.json();
   },

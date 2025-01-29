@@ -84,13 +84,15 @@ export const ReservationService = {
     toast.success("Reservation added successfully");
     return response.json();
   },
-  getAllReservations: async (
+  getReservations: async (
+    pageIndex: number,
+    pageSize: number,
     sortedBy: string,
     fromDate: string,
     toDate: string
   ) => {
     const response = await fetch(
-      `http://localhost:8080/api/reservations/all?sortedBy=${sortedBy}&fromDate=${fromDate}&toDate=${toDate}`
+      `http://localhost:8080/api/reservations/all?page=${pageIndex}&size=${pageSize}&sortedBy=${sortedBy}&fromDate=${fromDate}&toDate=${toDate}`
     );
     return response.json();
   },

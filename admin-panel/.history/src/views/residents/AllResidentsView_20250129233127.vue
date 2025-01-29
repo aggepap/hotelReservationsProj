@@ -63,8 +63,10 @@ const fetchCustomers = async (orderBy: string) => {
   try {
     state.loading = true;
     const response = await ResidentService.getResidents(orderBy);
-    state.residents = response;
-    console.log(response);
+    state.residents = response.data;
+    state.totalCount = response.data.totalCount;
+
+    console.log(response.data);
   } catch (error) {
     console.log(error);
   } finally {

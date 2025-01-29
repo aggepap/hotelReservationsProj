@@ -61,14 +61,8 @@ const fetchReservations = async (
       fromDate,
       toDate
     );
-    state.reservations = response.data.map((reservation) => ({
-      ...reservation,
-      firstResidentLastName:
-        reservation.residents && reservation.residents.length > 0e2
-          ? reservation.residents[0].lastname
-          : "No Name",
-    }));
-    console.log(state.reservations);
+    state.reservations = response.data;
+    console.log(response.data);
   } finally {
     state.loading = false;
   }
@@ -102,7 +96,7 @@ const initFilters = () => {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
-    firstResidentLastName: {
+    residedents: {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
@@ -168,8 +162,8 @@ const handleSubmit = (data: any) => {
           'reservationCode',
           'reservationBookedDate',
           'reservationStartDate',
+          'guestNumber',
           'roomNumber',
-          'firstResidentLastName',
         ]"
       >
         <template #header>
@@ -234,12 +228,14 @@ const handleSubmit = (data: any) => {
             {{ formatDate(data.reservationEndDate) }}
           </template>
         </Column>
-        <Column
-          field="firstResidentLastName"
-          sortable
-          header="Residents"
-          style="min-width: 12rem"
-        >
+        <Column sortable header="Residents" style="min-width: 12rem">
+          <template #body="{ data }">
+            <span>{{
+              data.residents && data.residents.length > 0
+                ? data.residents[0].lastname || "no name"
+                : "no name"
+            }}</span>
+          </template>
         </Column>
         <Column
           field="roomNumber"

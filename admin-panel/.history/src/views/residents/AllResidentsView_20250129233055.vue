@@ -59,12 +59,18 @@ onMounted(() => {
   console.log(state.residents);
 });
 
-const fetchCustomers = async (orderBy: string) => {
+const fetchCustomers = async (
+  pageIndex: number,
+  pageSize: number,
+  orderBy: string
+) => {
   try {
     state.loading = true;
     const response = await ResidentService.getResidents(orderBy);
-    state.residents = response;
-    console.log(response);
+    state.residents = response.data;
+    state.totalCount = response.data.totalCount;
+    state.pagesNumber = Math.ceil(state.totalCount / pageSize);
+    console.log(response.data);
   } catch (error) {
     console.log(error);
   } finally {

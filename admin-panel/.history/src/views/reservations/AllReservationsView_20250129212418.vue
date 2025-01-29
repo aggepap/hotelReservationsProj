@@ -9,21 +9,21 @@ import InputText from "primevue/inputtext";
 import InputIcon from "primevue/inputicon";
 import IconField from "primevue/iconfield";
 
+/**
+ * Get initial date and format it
+ */
+
 const state = reactive({
   reservations: [],
   loading: true,
 });
 
 onMounted(() => {
-  fetchReservations("reservationCode", "1990-01-01", formattedCurrentDate(1));
+  fetchReservations(0, 10, "reservationCode", "1990-01-01", formattedDate(1));
 });
 
-/**
- * Get initial date and format it
- */
-
 const date = new Date();
-const formattedCurrentDate = (daysAdded = 0) => {
+const formattedDate = (daysAdded = 0) => {
   const newDate = new Date(date);
   date.setDate(date.getDate() + daysAdded);
 
@@ -34,41 +34,27 @@ const formattedCurrentDate = (daysAdded = 0) => {
   return `${year}-${month}-${day}`;
 };
 
-const formatDate = (dateString: string) => {
-  if (!dateString) return "";
-
-  const date = new Date(dateString);
-
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = String(date.getFullYear());
-
-  return `${day}-${month}-${year}`;
-};
-
 /**
  * Get All Reservations
  */
 const fetchReservations = async (
+  pageIndex: number,
+  pageSize: number,
   sortedBy: string,
   fromDate: string,
   toDate: string
 ) => {
   state.loading = true;
   try {
-    const response = await ReservationService.getAllReservations(
+    const response = await ReservationService.getReservations(
+      pageIndex,
+      pageSize,
       sortedBy,
       fromDate,
       toDate
     );
-    state.reservations = response.data.map((reservation) => ({
-      ...reservation,
-      firstResidentLastName:
-        reservation.residents && reservation.residents.length > 0e2
-          ? reservation.residents[0].lastname
-          : "No Name",
-    }));
-    console.log(state.reservations);
+    state.reservations = response.data;
+    console.log(response.data);
   } finally {
     state.loading = false;
   }
@@ -102,50 +88,33 @@ const initFilters = () => {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
-    firstResidentLastName: {
-      operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
   };
 };
 initFilters();
 const clearFilter = () => {
   initFilters();
 };
-
-const handleSubmit = (data: any) => {
-  fetchReservations("reservationCode", data.fromDate, data.toDate);
-  console.log(data);
-};
 </script>
 
 <template>
-  <section class="">
+  <section class="grid place-items-center">
     <h2 class="text-black text-3xl text-center leading-5 font-semibold mb-8">
       Reservations
     </h2>
-
-    <div class="dateForm grid place-items-center">
-      <FormKit
-        type="form"
-        :actions="false"
-        @submit="handleSubmit"
-        submit-label="Search"
-      >
+    <div class="dateForm">
+      <FormKit type="form" :actions="false" submit-label="Search">
         <div class="flex justify-center items-center gap-2">
           <FormKit
-            name="fromDate"
             type="date"
-            :value="formattedCurrentDate()"
+            :value="formattedDate(0)"
             label="From"
             validation="required|"
             validation-visibility="live"
           />
           <FormKit
             type="date"
-            name="toDate"
-            :value="formattedCurrentDate(10)"
-            label="To"
+            :value="formattedDate(10)"
+            label="Since"
             validation="required"
             validation-visibility="live"
           />
@@ -154,13 +123,13 @@ const handleSubmit = (data: any) => {
       </FormKit>
     </div>
 
-    <div class="">
+    <main>
       <DataTable
         :value="state.reservations"
         paginator
         showGridlines
         :rows="10"
-        dataKey="reservationCode"
+        dataKey="id"
         :filters="filters"
         filterDisplay="menu"
         :loading="state.loading"
@@ -168,8 +137,8 @@ const handleSubmit = (data: any) => {
           'reservationCode',
           'reservationBookedDate',
           'reservationStartDate',
+          'guestNumber',
           'roomNumber',
-          'firstResidentLastName',
         ]"
       >
         <template #header>
@@ -200,18 +169,26 @@ const handleSubmit = (data: any) => {
           header="Reservation Code"
           style="min-width: 12rem"
         >
-          <template #body="{ data }">
-            {{ data.reservationCode.slice(0, 13) }}
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              placeholder="Search by code"
+            />
           </template>
         </Column>
         <Column
           field="reservationBookedDate"
           sortable
           header="Booked Date"
-          style="min-width: 5rem"
+          style="min-width: 12rem"
         >
-          <template #body="{ data }">
-            {{ formatDate(data.reservationBookedDate) }}
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by Booked date"
+            />
           </template>
         </Column>
         <Column
@@ -220,8 +197,12 @@ const handleSubmit = (data: any) => {
           header="Start Date"
           style="min-width: 12rem"
         >
-          <template #body="{ data }">
-            {{ formatDate(data.reservationStartDate) }}
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by Start date"
+            />
           </template>
         </Column>
         <Column
@@ -230,25 +211,42 @@ const handleSubmit = (data: any) => {
           header="End Date"
           style="min-width: 12rem"
         >
-          <template #body="{ data }">
-            {{ formatDate(data.reservationEndDate) }}
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by end date"
+            />
           </template>
         </Column>
         <Column
-          field="firstResidentLastName"
+          field="residents"
           sortable
           header="Residents"
           style="min-width: 12rem"
         >
-        </Column>
-        <Column
-          field="roomNumber"
-          sortable
-          header="Room Number"
-          style="min-width: 12rem"
-        >
+          <template #body="{ data }">
+            <span
+              >{{
+                data.residents.length > 0
+                  ? data.residents[0].firstname
+                  : "no name"
+              }}
+            </span>
+            <span>" " </span>
+            <span>{{
+              data.residents.length > 0 ? data.residents[0].lastname : ""
+            }}</span>
+          </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              placeholder="Search by end date"
+            />
+          </template>
         </Column>
       </DataTable>
-    </div>
+    </main>
   </section>
 </template>

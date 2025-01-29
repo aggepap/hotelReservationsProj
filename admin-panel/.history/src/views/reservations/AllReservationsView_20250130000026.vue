@@ -15,7 +15,11 @@ const state = reactive({
 });
 
 onMounted(() => {
-  fetchReservations("reservationCode", "1990-01-01", formattedCurrentDate(1));
+  fetchReservations(
+    "reservationCode",
+    "1990-01-01",
+    formatDate(date.toDateString(), 1)
+  );
 });
 
 /**
@@ -23,18 +27,18 @@ onMounted(() => {
  */
 
 const date = new Date();
-const formattedCurrentDate = (daysAdded = 0) => {
-  const newDate = new Date(date);
-  date.setDate(date.getDate() + daysAdded);
+// const formattedDate = (daysAdded = 0) => {
+//   const newDate = new Date(date);
+//   date.setDate(date.getDate() + daysAdded);
 
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+//   const year = date.getFullYear();
+//   const month = String(date.getMonth() + 1).padStart(2, "0");
+//   const day = String(date.getDate()).padStart(2, "0");
 
-  return `${year}-${month}-${day}`;
-};
+//   return `${year}-${month}-${day}`;
+// };
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string, daysAdded = 0) => {
   if (!dateString) return "";
 
   const date = new Date(dateString);
@@ -61,14 +65,8 @@ const fetchReservations = async (
       fromDate,
       toDate
     );
-    state.reservations = response.data.map((reservation) => ({
-      ...reservation,
-      firstResidentLastName:
-        reservation.residents && reservation.residents.length > 0e2
-          ? reservation.residents[0].lastname
-          : "No Name",
-    }));
-    console.log(state.reservations);
+    state.reservations = response.data;
+    console.log(response.data);
   } finally {
     state.loading = false;
   }
@@ -102,10 +100,6 @@ const initFilters = () => {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
-    firstResidentLastName: {
-      operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
   };
 };
 initFilters();
@@ -136,7 +130,7 @@ const handleSubmit = (data: any) => {
           <FormKit
             name="fromDate"
             type="date"
-            :value="formattedCurrentDate()"
+            :value="formatDate(date.toDateString())"
             label="From"
             validation="required|"
             validation-visibility="live"
@@ -144,7 +138,7 @@ const handleSubmit = (data: any) => {
           <FormKit
             type="date"
             name="toDate"
-            :value="formattedCurrentDate(10)"
+            :value="formatDate(date.toDateString(), 10)"
             label="To"
             validation="required"
             validation-visibility="live"
@@ -168,8 +162,8 @@ const handleSubmit = (data: any) => {
           'reservationCode',
           'reservationBookedDate',
           'reservationStartDate',
+          'guestNumber',
           'roomNumber',
-          'firstResidentLastName',
         ]"
       >
         <template #header>
@@ -200,8 +194,12 @@ const handleSubmit = (data: any) => {
           header="Reservation Code"
           style="min-width: 12rem"
         >
-          <template #body="{ data }">
-            {{ data.reservationCode.slice(0, 13) }}
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              placeholder="Search by code"
+            />
           </template>
         </Column>
         <Column
@@ -213,6 +211,13 @@ const handleSubmit = (data: any) => {
           <template #body="{ data }">
             {{ formatDate(data.reservationBookedDate) }}
           </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by Booked date"
+            />
+          </template>
         </Column>
         <Column
           field="reservationStartDate"
@@ -223,6 +228,13 @@ const handleSubmit = (data: any) => {
           <template #body="{ data }">
             {{ formatDate(data.reservationStartDate) }}
           </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by Start date"
+            />
+          </template>
         </Column>
         <Column
           field="reservationEndDate"
@@ -230,16 +242,34 @@ const handleSubmit = (data: any) => {
           header="End Date"
           style="min-width: 12rem"
         >
-          <template #body="{ data }">
-            {{ formatDate(data.reservationEndDate) }}
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="date"
+              placeholder="Search by end date"
+            />
           </template>
         </Column>
         <Column
-          field="firstResidentLastName"
+          field="residents"
           sortable
           header="Residents"
           style="min-width: 12rem"
         >
+          <template #body="{ data }">
+            <span>{{
+              data.residents && data.residents.length > 0
+                ? data.residents[0].lastname || "no name"
+                : "no name"
+            }}</span>
+          </template>
+          <template #filter="{ filterModel }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              placeholder="Search by end date"
+            />
+          </template>
         </Column>
         <Column
           field="roomNumber"

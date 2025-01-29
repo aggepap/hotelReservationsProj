@@ -102,7 +102,7 @@ const initFilters = () => {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
-    firstResidentLastName: {
+    residedents: {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
@@ -169,7 +169,6 @@ const handleSubmit = (data: any) => {
           'reservationBookedDate',
           'reservationStartDate',
           'roomNumber',
-          'firstResidentLastName',
         ]"
       >
         <template #header>
