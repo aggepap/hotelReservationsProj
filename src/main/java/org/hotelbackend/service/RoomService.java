@@ -8,10 +8,13 @@ import org.hotelbackend.core.Mapper;
 import org.hotelbackend.dto.RoomInsertDTO;
 import org.hotelbackend.dto.RoomReadOnlyDTO;
 import org.hotelbackend.filters.Paginated;
+import org.hotelbackend.model.Reservation;
 import org.hotelbackend.model.Room;
 import org.hotelbackend.repository.RoomRepository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 
@@ -40,6 +43,20 @@ public class RoomService {
 
     }
 
+    public Boolean checkAvailability(String roomNumber, LocalDate date){
+        boolean isAvailable = false;
+        Room selectedRoom = Room.find("roomNumber", roomNumber).firstResult();
+        Set<Reservation> roomReservations = selectedRoom.getReservations();
+
+        for (var reservation: roomReservations ){
+            if ((date.isAfter(reservation.getReservationStartDate()) || date.isEqual(reservation.getReservationStartDate()))
+                    && (date.isBefore(reservation.getReservationEndDate()) || date.isEqual(reservation.getReservationEndDate()))) {
+                isAvailable = true;
+                break;
+            }
+        }
+        return isAvailable;
+    }
 
     public List<RoomReadOnlyDTO> findRoomsByFloor(Integer floor){
         return this.roomRepository.getRoomsByFloor(floor);

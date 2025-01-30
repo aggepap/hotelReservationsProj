@@ -23,17 +23,27 @@ public class Mapper {
     }
     public ReservationReadOnlyDTO mapToReservationReadOnlyDTO(Reservation reservation){
 
-        return new ReservationReadOnlyDTO(reservation.getReservationCode(),reservation.getReservationBookedDate(),
+        return new ReservationReadOnlyDTO(reservation.getId(),reservation.getReservationCode(),reservation.getReservationBookedDate(),
                 reservation.getReservationStartDate(),reservation.getReservationEndDate(),reservation.getGuestsNumber(),reservation.getAdvancePaid(),
-                reservation.getIsActive(),reservation.getRoom().getId(),reservation.getResidents());
+                reservation.getIsActive(),reservation.getRoom().getId(),reservation.getRoom().getRoomNumber(),reservation.getResidents());
     }
     public Resident mapToResidentEntity(ResidentInsertDTO dto){
         return new Resident(null,dto.getFirstname(), dto.getLastname(), dto.getVat(), dto.getIdNumber(),
                 dto.getBirthDate(), dto.getAddress(), dto.getPhoneNumber(),dto.getEmail(),dto.getCountryCode(),dto.getGender(),null,null,null,null);
     }
     public ResidentReadOnlyDTO mapToResidentReadOnlyDTO(Resident resident){
+        String reservationCode;
+        String residentRoomNumber;
+        if(resident.getReservation() != null){
+            reservationCode = resident.getReservation().getReservationCode();
+            residentRoomNumber = resident.getReservation().getRoom().getRoomNumber();
+        }else{
+            reservationCode = null;
+            residentRoomNumber = null;
+        }
+
         return new ResidentReadOnlyDTO(resident.getId(), resident.getFirstname(),resident.getLastname(),
                 resident.getVat(), resident.getIdNumber(), resident.getBirthDate(),resident.getCountryCode().name(),
-                resident.getAddress(),resident.getEmail(),resident.getPhoneNumber(),resident.getGender().name(),resident.getIsAdult(),null,resident.getReservation());
+                resident.getAddress(),resident.getEmail(),resident.getPhoneNumber(),resident.getGender().name(),resident.getIsAdult(),residentRoomNumber,reservationCode);
     }
 }

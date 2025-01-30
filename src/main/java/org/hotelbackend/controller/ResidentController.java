@@ -13,6 +13,8 @@ import org.hotelbackend.filters.Paginated;
 import org.hotelbackend.service.ResidentService;
 import org.jboss.logging.Logger;
 
+import java.util.List;
+
 
 @Path("/api/residents")
 public class ResidentController {
@@ -38,12 +40,23 @@ public class ResidentController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAllResidents(
+    public Response getAllResidentsPaginated(
             @QueryParam("page") @DefaultValue("0") int pageIndex,
             @QueryParam("size") @DefaultValue("10") int pageSize,
             @QueryParam("sortedBy")@DefaultValue("lastname") String sortedBy
     ){
-        Paginated<ResidentReadOnlyDTO> residentsList = residentService.getAllResidents(pageIndex,pageSize,sortedBy);
+        Paginated<ResidentReadOnlyDTO> residentsList = residentService.getAllResidentsPaginated(pageIndex,pageSize,sortedBy);
+        return Response.status(Response.Status.OK).entity(residentsList).build();
+    }
+
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAllResidents(
+            @QueryParam("sortedBy")@DefaultValue("lastname") String sortedBy
+    ){
+        List<ResidentReadOnlyDTO> residentsList = residentService.getAllResidents(sortedBy);
         return Response.status(Response.Status.OK).entity(residentsList).build();
     }
 

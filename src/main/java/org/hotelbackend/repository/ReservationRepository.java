@@ -10,7 +10,10 @@ import jakarta.transaction.Transactional;
 import org.hotelbackend.core.Mapper;
 import org.hotelbackend.dto.ReservationInsertDTO;
 import org.hotelbackend.dto.ReservationReadOnlyDTO;
+import org.hotelbackend.dto.ReservationUpdateDTO;
+import org.hotelbackend.exceptions.AppObjectNotFoundException;
 import org.hotelbackend.model.Reservation;
+import org.hotelbackend.model.Room;
 
 import java.time.LocalDate;
 import java.util.List;

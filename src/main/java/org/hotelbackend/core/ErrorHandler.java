@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import org.hotelbackend.exceptions.AppObjectAlreadyExistsException;
+import org.hotelbackend.exceptions.AppObjectNotFoundException;
 import org.jboss.logging.Logger;
 import java.sql.SQLException;
 @Provider
@@ -22,7 +23,7 @@ public class ErrorHandler implements ExceptionMapper<Exception> {
         System.out.println(e.getStackTrace());
 
 
-        ErrorResponse errorResponse = new ErrorResponse("An unidentified Error occured",500);
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(),500);
         if (e instanceof IllegalArgumentException) {
             errorResponse = new ErrorResponse(e.getMessage(), 400); // Bad Request
         }
@@ -30,12 +31,12 @@ public class ErrorHandler implements ExceptionMapper<Exception> {
             errorResponse = new ErrorResponse(e.getMessage(), 409);
         }
         else if (e instanceof NullPointerException) {
-            errorResponse = new ErrorResponse("Null pointer exception", 500); // Internal Server Error (usually a bug)
+            errorResponse = new ErrorResponse(e.getMessage(), 500); // Internal Server Error (usually a bug)
         }
-       else if (e instanceof EntityNotFoundException) {
-            errorResponse = new ErrorResponse("Resource not found", 404); // Not Found
+       else if (e instanceof AppObjectNotFoundException) {
+            errorResponse = new ErrorResponse(e.getMessage(), 404); // Not Found
         } else if (e instanceof SQLException) {
-            errorResponse = new ErrorResponse("Database error", 500); // Internal Server Error
+            errorResponse = new ErrorResponse(e.getMessage(), 500); // Internal Server Error
         } else if (e instanceof WebApplicationException) {
             WebApplicationException webException = (WebApplicationException) e;
             errorResponse = new ErrorResponse(webException.getMessage(), webException.getResponse().getStatus()); // Use status from WebApplicationException

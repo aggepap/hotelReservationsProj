@@ -29,5 +29,5 @@ public class ResidentReadOnlyDTO {
     private String gender;
     private Boolean isAdult;
     private String roomNumber;
-    private Reservation reservation;
+    private String reservationCode;
 }

@@ -13,7 +13,7 @@ const state = reactive({
   reservations: [],
   loading: true,
 });
-
+const editingRows = ref([]);
 onMounted(() => {
   fetchReservations("reservationCode", "1990-01-01", formattedCurrentDate(1));
 });
@@ -117,6 +117,12 @@ const handleSubmit = (data: any) => {
   fetchReservations("reservationCode", data.fromDate, data.toDate);
   console.log(data);
 };
+
+const onRowEditSave = (event: any) => {
+  let { newData, index } = event;
+  console.log(newData, index);
+  ReservationService.updateReservation(newData);
+};
 </script>
 
 <template>
@@ -149,7 +155,13 @@ const handleSubmit = (data: any) => {
             validation="required"
             validation-visibility="live"
           />
-          <FormKit outer-class="m-0" type="submit" label="Submit" />
+          <FormKit
+            type="submit"
+            :classes="{
+              outer: '!-mb-2',
+            }"
+            label="Submit"
+          />
         </div>
       </FormKit>
     </div>
@@ -157,6 +169,11 @@ const handleSubmit = (data: any) => {
     <div class="">
       <DataTable
         :value="state.reservations"
+        editMode="row"
+        v-model:editingRows="editingRows"
+        @row-edit-save="onRowEditSave"
+        resizableColumns
+        columnResizeMode="fit"
         paginator
         showGridlines
         :rows="10"
@@ -198,7 +215,7 @@ const handleSubmit = (data: any) => {
           field="reservationCode"
           sortable
           header="Reservation Code"
-          style="min-width: 12rem"
+          style="min-width: 5rem"
         >
           <template #body="{ data }">
             {{ data.reservationCode.slice(0, 13) }}
@@ -218,8 +235,11 @@ const handleSubmit = (data: any) => {
           field="reservationStartDate"
           sortable
           header="Start Date"
-          style="min-width: 12rem"
+          style="min-width: 5rem"
         >
+          <template #editor="{ data, field }">
+            <InputText type="date" v-model="data[field]" fluid />
+          </template>
           <template #body="{ data }">
             {{ formatDate(data.reservationStartDate) }}
           </template>
@@ -228,8 +248,11 @@ const handleSubmit = (data: any) => {
           field="reservationEndDate"
           sortable
           header="End Date"
-          style="min-width: 12rem"
+          style="min-width: 5rem"
         >
+          <template #editor="{ data, field }">
+            <InputText type="date" v-model="data[field]" fluid />
+          </template>
           <template #body="{ data }">
             {{ formatDate(data.reservationEndDate) }}
           </template>
@@ -238,17 +261,32 @@ const handleSubmit = (data: any) => {
           field="firstResidentLastName"
           sortable
           header="Residents"
-          style="min-width: 12rem"
+          style="min-width: 5rem"
         >
         </Column>
         <Column
           field="roomNumber"
           sortable
           header="Room Number"
-          style="min-width: 12rem"
+          style="min-width: 5rem"
         >
+          <template #editor="{ data, field }">
+            <InputText v-model="data[field]" fluid />
+          </template>
         </Column>
+        <Column
+          :rowEditor="true"
+          style="width: 5%; min-width: 2rem"
+          bodyStyle="text-align:center"
+        ></Column>
       </DataTable>
     </div>
   </section>
 </template>
+
+<style scoped>
+#input7 {
+  padding: 0;
+  margin: 0;
+}
+</style>

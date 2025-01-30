@@ -1,6 +1,9 @@
 import type { AddRoomData } from "@/interfaces/RoomInterfaces";
 import type { addResidentData } from "@/interfaces/ResidentInterfaces";
-import type { AddReservationData } from "@/interfaces/ReservationInterfaces";
+import type {
+  AddReservationData,
+  UpdateReservationData,
+} from "@/interfaces/ReservationInterfaces";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 
@@ -79,9 +82,31 @@ export const ReservationService = {
     if (!response.ok) {
       const error = await response.json();
       toast.error(error.message);
+      console.log(response);
+
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     toast.success("Reservation added successfully");
+    return response.json();
+  },
+  updateReservation: async (updateData: UpdateReservationData) => {
+    const response = await fetch(
+      "http://localhost:8080/api/reservations/update",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData),
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json();
+      toast.error(error.message);
+      console.log(error);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    toast.success("Reservation updated successfully");
     return response.json();
   },
   getAllReservations: async (

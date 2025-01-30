@@ -15,9 +15,12 @@ import java.time.LocalDateTime;
 @ToString
 public class ReservationInsertDTO {
 
+    @NotNull(message = "Firstname is required")
     private String firstname;
+    @NotNull(message = "Lastname is required")
     private String lastname;
     private String vat;
+    @NotNull(message = "ID Number is required")
     private String idNumber;
     private String address;
     private String phoneNumber;
@@ -25,9 +28,12 @@ public class ReservationInsertDTO {
     private LocalDate birthDate;
     private CountryCode countryCode;
     private Gender gender;
+    @NotNull(message = "Start Date is required")
     private LocalDate reservationStartDate;
+    @NotNull(message = "End Date is required")
     private LocalDate reservationEndDate;
     private String roomNumber;
+    @NotNull(message = "Number of guests is required")
     private Integer guestsNumber;
     private Boolean advancePaid;
 

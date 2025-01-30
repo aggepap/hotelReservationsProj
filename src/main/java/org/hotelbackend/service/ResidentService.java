@@ -34,11 +34,18 @@ public class ResidentService {
         return mapper.mapToResidentReadOnlyDTO(residentRepository.addResident(dto));
     }
 
-    public Paginated<ResidentReadOnlyDTO> getAllResidents(int pageIndex, int pageSize, String sortedBy ){
+    public Paginated<ResidentReadOnlyDTO> getAllResidentsPaginated(int pageIndex, int pageSize, String sortedBy ){
         PanacheQuery<Resident> query = Resident.findAll(Sort.by(sortedBy));
         long totalCount = query.count();
         List<ResidentReadOnlyDTO> data = query.page(pageIndex, pageSize).stream().map(mapper::mapToResidentReadOnlyDTO).toList();
         return new Paginated<>(data, totalCount);
+
+    }
+    public List<ResidentReadOnlyDTO> getAllResidents(String sortedBy ){
+        PanacheQuery<Resident> query = Resident.findAll(Sort.by(sortedBy));
+
+        return query.stream().map(mapper::mapToResidentReadOnlyDTO).toList();
+
 
     }
 

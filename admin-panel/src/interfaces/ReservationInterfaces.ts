@@ -1,7 +1,7 @@
 export interface AddReservationData {
   reservationStartDate: Date;
   reservationEndDate: Date;
-  roomNumber: number;
+  roomNumber: string;
   guestsNumber: number;
   firstname: string;
   lastname: string;
@@ -13,4 +13,12 @@ export interface AddReservationData {
   email: string;
   address: string;
   phoneNumber: string;
+}
+
+export interface UpdateReservationData {
+  id: number;
+  reservationStartDate: Date;
+  reservationEndDate: Date;
+  roomNumber: string;
+  guestsNumber: number;
 }
