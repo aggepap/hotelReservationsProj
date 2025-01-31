@@ -34,13 +34,24 @@ public class ReservationController {
         return Response.status(Response.Status.CREATED).entity(newReservation).build();
     }
 
+//    @GET
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getByCode(@QueryParam("resCode") String reservationCode) {
+//        ReservationReadOnlyDTO fetched = reservationService.getReservationByCode(reservationCode);
+//        return Response.status(Response.Status.OK).entity(fetched).build();
+//    }
+
     @GET
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getByCode(@QueryParam("resCode") String reservationCode) {
-        ReservationReadOnlyDTO fetched = reservationService.getByCode(reservationCode);
+    public Response getById(@PathParam("id") Long id) {
+        ReservationReadOnlyDTO fetched = reservationService.getReservationById(id);
         return Response.status(Response.Status.OK).entity(fetched).build();
     }
+
+
 
     @GET
     @Path("/all")
@@ -51,10 +62,11 @@ public class ReservationController {
             @QueryParam("size") @DefaultValue("10") int pageSize,
             @QueryParam("sortedBy") @DefaultValue("id") String sortedBy,
             @QueryParam("fromDate") @DefaultValue("1950-01-01") LocalDate fromDate,
-            @QueryParam("toDate") @DefaultValue("2150-01-01") LocalDate toDate
+            @QueryParam("toDate") @DefaultValue("2150-01-01") LocalDate toDate,
+            @QueryParam("isActive") @DefaultValue("") Boolean isActive
 
     ) {
-        Paginated<ReservationReadOnlyDTO> GetAllReservations = reservationService.GetAllReservationsPaginated(pageIndex, pageSize, sortedBy, fromDate, toDate);
+        Paginated<ReservationReadOnlyDTO> GetAllReservations = reservationService.GetAllReservationsPaginated(pageIndex, pageSize, sortedBy, fromDate, toDate, isActive);
         return Response.status(Response.Status.OK).entity(GetAllReservations).build();
     }
 

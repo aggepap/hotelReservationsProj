@@ -20,6 +20,7 @@ import org.hotelbackend.repository.RoomRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class ReservationService {
@@ -101,13 +102,26 @@ public class ReservationService {
     }
 
     @Transactional
-    public Paginated<ReservationReadOnlyDTO> GetAllReservationsPaginated(int pageIndex, int pageSize, String sortedBy, LocalDate fromDate, LocalDate toDate){
-        PanacheQuery<Reservation> query = Reservation.find(
-                "reservationStartDate >= ?1 and reservationStartDate <= ?2",
-                Sort.by(sortedBy),
-                fromDate,
-                toDate
-        );
+    public Paginated<ReservationReadOnlyDTO> GetAllReservationsPaginated(int pageIndex, int pageSize, String sortedBy, LocalDate fromDate, LocalDate toDate, Boolean isActive){
+        PanacheQuery<Reservation> query = null;
+        if(isActive){
+             query = Reservation.find(
+                    "reservationStartDate >= ?1 and reservationStartDate <= ?2 and isActive = ?3",
+                    Sort.by(sortedBy),
+                    fromDate,
+                    toDate,
+                    isActive
+            );
+        }else{
+            query = Reservation.find(
+                    "reservationStartDate >= ?1 and reservationStartDate <= ?2",
+                    Sort.by(sortedBy),
+                    fromDate,
+                    toDate
+            );
+        }
+
+
         long totalCount = query.count();
         List<ReservationReadOnlyDTO> data = query.page(pageIndex, pageSize).stream().map(mapper::mapToReservationReadOnlyDTO).toList();
         return new Paginated<>(data, totalCount);
@@ -124,6 +138,13 @@ public class ReservationService {
         return query.stream().map(mapper::mapToReservationReadOnlyDTO).toList();
 
     }
+
+    public List<ReservationReadOnlyDTO> getAllActiveReservations(String sortedBy){
+        PanacheQuery<Reservation> query = Reservation.find("isActive", true,Sort.by(sortedBy));
+        return query.stream().map(mapper::mapToReservationReadOnlyDTO).toList();
+    }
+
+
     @Transactional
     public void CheckInReservation(Long reservationId) throws AppObjectNotFoundException, AppObjectInvalidArgumentException {
         Reservation reservation = reservationRepository.findById(reservationId);
@@ -138,10 +159,13 @@ public class ReservationService {
 
     }
 
-    public ReservationReadOnlyDTO getByCode(String reservationCode){
+    public ReservationReadOnlyDTO getReservationByCode(String reservationCode){
        return mapper.mapToReservationReadOnlyDTO(reservationRepository.getReservationByResCode(reservationCode));
     }
 
+    public ReservationReadOnlyDTO getReservationById(Long id) {
+        return mapper.mapToReservationReadOnlyDTO(reservationRepository.findById(id));
+    }
 
     private static List<LocalDate> getDatesBetween(LocalDate startDate, LocalDate endDate) throws AppObjectInvalidArgumentException {
         if (startDate.isAfter(endDate)) {

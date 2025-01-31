@@ -6,6 +6,7 @@ import AddResidentView from "../views/residents/AddResidentView.vue";
 import AllResidentsView from "@/views/residents/AllResidentsView.vue";
 import AddReservationView from "../views/reservations/AddReservationView.vue";
 import AllReservationsView from "@/views/reservations/AllReservationsView.vue";
+import SingleReservationView from "../views/reservations/SingleReservationView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: "/reservations/add",
       name: "addReservation",
       component: AddReservationView,
+    },
+    {
+      path: "/reservations/:id",
+      name: "singleReservation",
+      component: SingleReservationView,
     },
 
     {

@@ -43,9 +43,7 @@ public class ResidentService {
     }
     public List<ResidentReadOnlyDTO> getAllResidents(String sortedBy ){
         PanacheQuery<Resident> query = Resident.findAll(Sort.by(sortedBy));
-
         return query.stream().map(mapper::mapToResidentReadOnlyDTO).toList();
-
 
     }
 

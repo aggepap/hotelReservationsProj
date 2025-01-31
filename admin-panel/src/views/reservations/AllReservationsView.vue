@@ -52,14 +52,16 @@ const formatDate = (dateString: string) => {
 const fetchReservations = async (
   sortedBy: string,
   fromDate: string,
-  toDate: string
+  toDate: string,
+  isActive?: boolean
 ) => {
   state.loading = true;
   try {
     const response = await ReservationService.getAllReservations(
       sortedBy,
       fromDate,
-      toDate
+      toDate,
+      false
     );
     state.reservations = response.data.map((reservation) => ({
       ...reservation,

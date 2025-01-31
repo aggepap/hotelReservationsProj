@@ -22,10 +22,21 @@ public class Mapper {
                 dto.getReservationEndDate(),dto.getGuestsNumber(), dto.getAdvancePaid(),null, null,null, null, null);
     }
     public ReservationReadOnlyDTO mapToReservationReadOnlyDTO(Reservation reservation){
+        Long roomId;
+        String roomNumber;
+        if(reservation.getRoom() != null){
+            roomId = reservation.getRoom().getId();
+            roomNumber = reservation.getRoom().getRoomNumber();
+        }else{
+            roomId =null;
+            roomNumber = null;
+        }
+
+
 
         return new ReservationReadOnlyDTO(reservation.getId(),reservation.getReservationCode(),reservation.getReservationBookedDate(),
                 reservation.getReservationStartDate(),reservation.getReservationEndDate(),reservation.getGuestsNumber(),reservation.getAdvancePaid(),
-                reservation.getIsActive(),reservation.getRoom().getId(),reservation.getRoom().getRoomNumber(),reservation.getResidents());
+                reservation.getIsActive(),roomId,roomNumber,reservation.getResidents());
     }
     public Resident mapToResidentEntity(ResidentInsertDTO dto){
         return new Resident(null,dto.getFirstname(), dto.getLastname(), dto.getVat(), dto.getIdNumber(),

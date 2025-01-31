@@ -112,10 +112,17 @@ export const ReservationService = {
   getAllReservations: async (
     sortedBy: string,
     fromDate: string,
-    toDate: string
+    toDate: string,
+    isActive?: boolean
   ) => {
     const response = await fetch(
-      `http://localhost:8080/api/reservations/all?sortedBy=${sortedBy}&fromDate=${fromDate}&toDate=${toDate}`
+      `http://localhost:8080/api/reservations/all?sortedBy=${sortedBy}&fromDate=${fromDate}&toDate=${toDate}&isActive=${isActive}`
+    );
+    return response.json();
+  },
+  getReservationById: async (id: number) => {
+    const response = await fetch(
+      `http://localhost:8080/api/reservations/${id}`
     );
     return response.json();
   },
