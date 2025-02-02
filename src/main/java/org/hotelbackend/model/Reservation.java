@@ -44,7 +44,7 @@ public class Reservation extends PanacheEntityBase {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "reservation", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "reservation",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Resident> residents = new HashSet<>();
 
@@ -52,11 +52,12 @@ public class Reservation extends PanacheEntityBase {
     @JoinColumn(name="room_id")
     private Room room;
 
-
+    @Transactional
     public void addRoomToReservation(Room room){
         this.room = room;
         room.getReservations().add(this);
     }
+    @Transactional
     public void addResidentToReservation(Resident resident){
         if(residents == null) {
             residents = new HashSet<>();

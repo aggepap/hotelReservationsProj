@@ -3,10 +3,21 @@ import { FormKit } from "@formkit/vue";
 import { ref } from "vue";
 import { ResidentService } from "@/services/ApiServices";
 import { useToast } from "vue-toastification";
-const submitted = ref(false);
+
 const toast = useToast();
+const props = defineProps({
+  reservationId: {
+    type: Number,
+    required: false,
+    default: null,
+  },
+});
 
 const handleSubmit = async (data: any) => {
+  if (props.reservationId) {
+    data.reservationId = props.reservationId;
+    console.log("RESERVATION ID", data.reservationId);
+  }
   const timeout = new Promise((_, reject) => {
     setTimeout(() => {
       reject(new Error("Request timed out"));
@@ -18,12 +29,11 @@ const handleSubmit = async (data: any) => {
       ResidentService.addResident(data),
       timeout,
     ]);
-
-    submitted.value = true;
   } catch (error: any) {
     if (error.message === "Request timed out") {
       toast.error("Request timed out");
     } else {
+      toast.error(error.message);
     }
   }
 };

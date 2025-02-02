@@ -24,14 +24,14 @@ public class ResidentService {
     private ResidentRepository residentRepository;
 
 
-    public ResidentReadOnlyDTO addNewResident(ResidentInsertDTO dto) throws AppObjectAlreadyExistsException {
+    public Resident addNewResident(ResidentInsertDTO dto) throws AppObjectAlreadyExistsException {
         if(residentRepository.findByVat(dto.getVat()) != null){
             throw new AppObjectAlreadyExistsException("Resident", "Resident with VAT: " + dto.getVat() + " already exists");
         }
         if(residentRepository.findByIdNumber(dto.getIdNumber()) != null){
             throw new AppObjectAlreadyExistsException("Resident", "Resident with Id Number: " + dto.getIdNumber() + " already exists");
         }
-        return mapper.mapToResidentReadOnlyDTO(residentRepository.addResident(dto));
+        return residentRepository.addResident(dto);
     }
 
     public Paginated<ResidentReadOnlyDTO> getAllResidentsPaginated(int pageIndex, int pageSize, String sortedBy ){

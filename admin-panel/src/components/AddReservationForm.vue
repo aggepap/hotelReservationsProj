@@ -12,6 +12,7 @@ const state = reactive({
   selectedRoom: null,
   loading: true,
 });
+
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const handleSubmit = async (data: any) => {
   const timeout = new Promise((_, reject) => {

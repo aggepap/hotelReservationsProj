@@ -30,5 +30,6 @@ public class ResidentInsertDTO {
     private LocalDate birthDate;
     private CountryCode countryCode;
     private Gender gender;
+    private Long reservationId;
 
 }

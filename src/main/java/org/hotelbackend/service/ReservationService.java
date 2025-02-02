@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.hotelbackend.core.Mapper;
 import org.hotelbackend.dto.*;
 import org.hotelbackend.exceptions.AppGenericException;
+import org.hotelbackend.exceptions.AppObjectAlreadyExistsException;
 import org.hotelbackend.exceptions.AppObjectInvalidArgumentException;
 import org.hotelbackend.exceptions.AppObjectNotFoundException;
 import org.hotelbackend.filters.Paginated;
@@ -28,7 +29,7 @@ public class ReservationService {
     @Inject
     private Mapper mapper;
     @Inject
-    private ResidentRepository residentRepository;
+    private ResidentService residentService;
     @Inject
     private ReservationRepository reservationRepository;
     @Inject
@@ -37,14 +38,15 @@ public class ReservationService {
 
 
     @Transactional
-    public ReservationReadOnlyDTO addNewReservation(ReservationInsertDTO dto) throws AppObjectInvalidArgumentException {
+    public ReservationReadOnlyDTO addNewReservation(ReservationInsertDTO dto) throws AppObjectInvalidArgumentException, AppObjectAlreadyExistsException {
         ReservationInsertDTO basicReservationDataInsert = new ReservationInsertDTO(dto.getReservationStartDate(),dto.getReservationEndDate(),dto.getGuestsNumber());
+        Reservation newReservation = reservationRepository.addReservation(basicReservationDataInsert);
         ResidentInsertDTO bookingResidentDTO = new ResidentInsertDTO(dto.getFirstname(), dto.getLastname(), dto.getVat(), dto.getIdNumber(),
-                dto.getAddress(), dto.getPhoneNumber(), dto.getEmail(),dto.getBirthDate(),dto.getCountryCode(),dto.getGender());
+                dto.getAddress(), dto.getPhoneNumber(), dto.getEmail(),dto.getBirthDate(),dto.getCountryCode(),dto.getGender(), newReservation.getId());
 
         Room bookingroom = Room.find("roomNumber",dto.getRoomNumber()).firstResult();
-        Reservation newReservation = reservationRepository.addReservation(basicReservationDataInsert);
-        Resident bookingResident = residentRepository.addResident(bookingResidentDTO);
+
+        Resident bookingResident = residentService.addNewResident(bookingResidentDTO);
 
         List<LocalDate> daysOfReservation = getDatesBetween(dto.getReservationStartDate(),dto.getReservationEndDate());
         boolean isAvailable = true;

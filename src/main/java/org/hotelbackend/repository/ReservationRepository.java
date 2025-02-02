@@ -44,6 +44,9 @@ public class ReservationRepository implements  PanacheRepositoryBase<Reservation
     public Reservation getReservationByResCode(String reservationCode){
         return find("reservationCode",reservationCode).firstResult();
     }
+    public Reservation findById(Long id){
+        return Reservation.findById(id);
+    }
 
     public List<ReservationReadOnlyDTO> getReservationsByRoomAndDates(Integer roomNumber, LocalDate startDate, LocalDate endDate){
         return jpaStreamer.stream(Reservation.class)

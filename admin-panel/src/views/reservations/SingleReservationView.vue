@@ -1,19 +1,25 @@
 <script setup>
-import { useRoute } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import { ReservationService } from "@/services/ApiServices";
-import { onMounted, reactive } from "vue";
+import { onMounted, ref, reactive } from "vue";
 import ProgressSpinner from "primevue/progressspinner";
-
+import AddResidentForm from "@/components/AddResidentForm.vue";
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
 const state = reactive({
   reservationId: "",
   reservation: null,
   loading: true,
 });
+const visible = ref(false);
 
 onMounted(async () => {
   const route = useRoute();
   state.reservationId = Number.parseInt(route.params.id);
   await getReservation(state.reservationId);
+  document.addEventListener("DOMContentLoaded", (event) => {
+    document.getElementById("addResidentButton").click();
+  });
 });
 
 const getReservation = async (id) => {
@@ -25,6 +31,7 @@ const getReservation = async (id) => {
     console.log(error);
   } finally {
     state.loading = false;
+    console.log(state.reservation.residents);
   }
 };
 </script>
@@ -118,13 +125,27 @@ const getReservation = async (id) => {
           </button>
         </div>
       </div>
-      <div
-        v-for="resident in state.reservation.residents"
-        :key="resident.id"
-        class="text-black"
-      >
-        {{ resident.firstname }}
-      </div>
+      <aside class="bg-gray-100 w-1/4 p-4">
+        <h2 class="text-xl font-bold mb-4 text-black">Residents</h2>
+        <RouterLink
+          v-for="resident in state.reservation.residents"
+          :key="resident.id"
+          :to="`/residents/${resident.id}`"
+          class="text-black"
+        >
+          {{ resident.firstname }} {{ resident.lastname }}
+        </RouterLink>
+
+        <Button label="Add New Resident" @click="visible = true" />
+        <Dialog
+          v-model:visible="visible"
+          modal
+          header="Edit Profile"
+          :style="{ width: '40rem' }"
+        >
+          <AddResidentForm :reservationId="state.reservation.id" />
+        </Dialog>
+      </aside>
     </main>
   </section>
 </template>

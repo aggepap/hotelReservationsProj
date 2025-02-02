@@ -23,18 +23,14 @@ const initFilters = () => {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    representative: { value: null, matchMode: FilterMatchMode.IN },
-    birthDate: {
+
+    roomBumber: {
       operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
     countryCode: {
       operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
-    gender: {
-      operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
   };
 };
@@ -89,13 +85,12 @@ const clearFilter = () => {
       dataKey="id"
       filterDisplay="menu"
       :loading="state.loading"
+      :filters="filters"
       :globalFilterFields="[
         'firstname',
         'lastname',
-        'address',
-        'birthDate',
         'countryCode',
-        'gender',
+        'roomNumber',
       ]"
     >
       <template #header>

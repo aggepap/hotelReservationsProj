@@ -25,12 +25,21 @@ public final class Room$ {
         false
     );
     /**
-     * This Field corresponds to the {@link Room} field "id".
+     * This Field corresponds to the {@link Room} field "roomNumber".
      */
-    public static final ComparableField<Room, Long> id = ComparableField.create(
+    public static final StringField<Room> roomNumber = StringField.create(
         Room.class,
-        "id",
-        Room::getId,
+        "roomNumber",
+        Room::getRoomNumber,
+        true
+    );
+    /**
+     * This Field corresponds to the {@link Room} field "floor".
+     */
+    public static final StringField<Room> floor = StringField.create(
+        Room.class,
+        "floor",
+        Room::getFloor,
         false
     );
     /**
@@ -43,12 +52,21 @@ public final class Room$ {
         false
     );
     /**
-     * This Field corresponds to the {@link Room} field "floor".
+     * This Field corresponds to the {@link Room} field "id".
      */
-    public static final StringField<Room> floor = StringField.create(
+    public static final ComparableField<Room, Long> id = ComparableField.create(
         Room.class,
-        "floor",
-        Room::getFloor,
+        "id",
+        Room::getId,
+        false
+    );
+    /**
+     * This Field corresponds to the {@link Room} field "capacity".
+     */
+    public static final ComparableField<Room, Integer> capacity = ComparableField.create(
+        Room.class,
+        "capacity",
+        Room::getCapacity,
         false
     );
     /**
@@ -58,24 +76,6 @@ public final class Room$ {
         Room.class,
         "isAvailable",
         Room::getIsAvailable,
-        false
-    );
-    /**
-     * This Field corresponds to the {@link Room} field "roomNumber".
-     */
-    public static final StringField<Room> roomNumber = StringField.create(
-        Room.class,
-        "roomNumber",
-        Room::getRoomNumber,
-        true
-    );
-    /**
-     * This Field corresponds to the {@link Room} field "capacity".
-     */
-    public static final ComparableField<Room, Integer> capacity = ComparableField.create(
-        Room.class,
-        "capacity",
-        Room::getCapacity,
         false
     );
 }

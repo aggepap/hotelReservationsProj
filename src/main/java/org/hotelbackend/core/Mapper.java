@@ -7,6 +7,9 @@ import org.hotelbackend.model.Reservation;
 import org.hotelbackend.model.Resident;
 import org.hotelbackend.model.Room;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @ApplicationScoped
 public class Mapper {
 
@@ -32,11 +35,16 @@ public class Mapper {
             roomNumber = null;
         }
 
-
+        Set<ResidentReadOnlyDTO> residentDTOs = null;
+        if (reservation.getResidents() != null) {
+            residentDTOs = reservation.getResidents().stream()
+                    .map(this::mapToResidentReadOnlyDTO)
+                    .collect(Collectors.toSet());
+        }
 
         return new ReservationReadOnlyDTO(reservation.getId(),reservation.getReservationCode(),reservation.getReservationBookedDate(),
                 reservation.getReservationStartDate(),reservation.getReservationEndDate(),reservation.getGuestsNumber(),reservation.getAdvancePaid(),
-                reservation.getIsActive(),roomId,roomNumber,reservation.getResidents());
+                reservation.getIsActive(),roomId,roomNumber,residentDTOs);
     }
     public Resident mapToResidentEntity(ResidentInsertDTO dto){
         return new Resident(null,dto.getFirstname(), dto.getLastname(), dto.getVat(), dto.getIdNumber(),

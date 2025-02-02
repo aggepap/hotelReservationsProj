@@ -25,5 +25,5 @@ public class ReservationReadOnlyDTO {
     private Boolean isActive;
     private Long roomId;
     private String roomNumber;
-    private Set<Resident>residents;
+    private Set<ResidentReadOnlyDTO>residents;
 }

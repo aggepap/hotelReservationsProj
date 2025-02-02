@@ -4,10 +4,13 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import { ReservationService } from "@/services/ApiServices";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
+import { useRouter } from "vue-router";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import InputIcon from "primevue/inputicon";
 import IconField from "primevue/iconfield";
+
+const router = useRouter();
 
 const state = reactive({
   reservations: [],
@@ -125,6 +128,15 @@ const onRowEditSave = (event: any) => {
   console.log(newData, index);
   ReservationService.updateReservation(newData);
 };
+
+const onRowSelect = (event: any) => {
+  router.push({
+    name: "singleReservation",
+    params: {
+      id: event.data.id,
+    },
+  });
+};
 </script>
 
 <template>
@@ -170,7 +182,9 @@ const onRowEditSave = (event: any) => {
 
     <div class="">
       <DataTable
+        @rowSelect="onRowSelect"
         :value="state.reservations"
+        selectionMode="single"
         editMode="row"
         v-model:editingRows="editingRows"
         @row-edit-save="onRowEditSave"
@@ -179,7 +193,7 @@ const onRowEditSave = (event: any) => {
         paginator
         showGridlines
         :rows="10"
-        dataKey="reservationCode"
+        dataKey="id"
         :filters="filters"
         filterDisplay="menu"
         :loading="state.loading"

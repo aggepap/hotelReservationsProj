@@ -9,6 +9,7 @@ export interface addResidentData {
   gender: string;
   country: string;
   phoneNumber: string;
+  reservationId?: number;
 }
 
 export interface Resident {

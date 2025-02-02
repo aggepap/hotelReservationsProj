@@ -19,6 +19,16 @@ public final class Reservation$ {
     
     /**
      * This Field corresponds to the {@link Reservation} field
+     * "reservationBookedDate".
+     */
+    public static final ComparableField<Reservation, LocalDateTime> reservationBookedDate = ComparableField.create(
+        Reservation.class,
+        "reservationBookedDate",
+        Reservation::getReservationBookedDate,
+        false
+    );
+    /**
+     * This Field corresponds to the {@link Reservation} field
      * "reservationCode".
      */
     public static final StringField<Reservation> reservationCode = StringField.create(
@@ -28,21 +38,30 @@ public final class Reservation$ {
         true
     );
     /**
-     * This Field corresponds to the {@link Reservation} field "id".
+     * This Field corresponds to the {@link Reservation} field "isActive".
      */
-    public static final ComparableField<Reservation, Long> id = ComparableField.create(
+    public static final ComparableField<Reservation, Boolean> isActive = ComparableField.create(
         Reservation.class,
-        "id",
-        Reservation::getId,
+        "isActive",
+        Reservation::getIsActive,
         false
     );
     /**
-     * This Field corresponds to the {@link Reservation} field "residents".
+     * This Field corresponds to the {@link Reservation} field "guestsNumber".
      */
-    public static final ReferenceField<Reservation, Set<Resident>> residents = ReferenceField.create(
+    public static final ComparableField<Reservation, Integer> guestsNumber = ComparableField.create(
         Reservation.class,
-        "residents",
-        Reservation::getResidents,
+        "guestsNumber",
+        Reservation::getGuestsNumber,
+        false
+    );
+    /**
+     * This Field corresponds to the {@link Reservation} field "createdAt".
+     */
+    public static final ComparableField<Reservation, LocalDateTime> createdAt = ComparableField.create(
+        Reservation.class,
+        "createdAt",
+        Reservation::getCreatedAt,
         false
     );
     /**
@@ -65,6 +84,34 @@ public final class Reservation$ {
     );
     /**
      * This Field corresponds to the {@link Reservation} field
+     * "reservationEndDate".
+     */
+    public static final ComparableField<Reservation, LocalDate> reservationEndDate = ComparableField.create(
+        Reservation.class,
+        "reservationEndDate",
+        Reservation::getReservationEndDate,
+        false
+    );
+    /**
+     * This Field corresponds to the {@link Reservation} field "id".
+     */
+    public static final ComparableField<Reservation, Long> id = ComparableField.create(
+        Reservation.class,
+        "id",
+        Reservation::getId,
+        false
+    );
+    /**
+     * This Field corresponds to the {@link Reservation} field "residents".
+     */
+    public static final ReferenceField<Reservation, Set<Resident>> residents = ReferenceField.create(
+        Reservation.class,
+        "residents",
+        Reservation::getResidents,
+        false
+    );
+    /**
+     * This Field corresponds to the {@link Reservation} field
      * "reservationStartDate".
      */
     public static final ComparableField<Reservation, LocalDate> reservationStartDate = ComparableField.create(
@@ -80,53 +127,6 @@ public final class Reservation$ {
         Reservation.class,
         "room",
         Reservation::getRoom,
-        false
-    );
-    /**
-     * This Field corresponds to the {@link Reservation} field
-     * "reservationBookedDate".
-     */
-    public static final ComparableField<Reservation, LocalDateTime> reservationBookedDate = ComparableField.create(
-        Reservation.class,
-        "reservationBookedDate",
-        Reservation::getReservationBookedDate,
-        false
-    );
-    /**
-     * This Field corresponds to the {@link Reservation} field
-     * "reservationEndDate".
-     */
-    public static final ComparableField<Reservation, LocalDate> reservationEndDate = ComparableField.create(
-        Reservation.class,
-        "reservationEndDate",
-        Reservation::getReservationEndDate,
-        false
-    );
-    /**
-     * This Field corresponds to the {@link Reservation} field "guestsNumber".
-     */
-    public static final ComparableField<Reservation, Integer> guestsNumber = ComparableField.create(
-        Reservation.class,
-        "guestsNumber",
-        Reservation::getGuestsNumber,
-        false
-    );
-    /**
-     * This Field corresponds to the {@link Reservation} field "createdAt".
-     */
-    public static final ComparableField<Reservation, LocalDateTime> createdAt = ComparableField.create(
-        Reservation.class,
-        "createdAt",
-        Reservation::getCreatedAt,
-        false
-    );
-    /**
-     * This Field corresponds to the {@link Reservation} field "isActive".
-     */
-    public static final ComparableField<Reservation, Boolean> isActive = ComparableField.create(
-        Reservation.class,
-        "isActive",
-        Reservation::getIsActive,
         false
     );
 }

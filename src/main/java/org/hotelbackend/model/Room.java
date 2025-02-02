@@ -13,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+
 public class Room extends PanacheEntityBase {
 
     @Id
