@@ -5,6 +5,7 @@ import type {
   UpdateReservationData,
 } from "@/interfaces/ReservationInterfaces";
 import { useToast } from "vue-toastification";
+import AddResidentToReservation from "@/components/AddResidentToReservation.vue";
 const toast = useToast();
 
 /**
@@ -65,6 +66,10 @@ export const ResidentService = {
     );
     return response.json();
   },
+  getResidentById: async (id: number) => {
+    const response = await fetch(`http://localhost:8080/api/residents/${id}`);
+    return response.json();
+  },
 };
 /**
  * ReservationService
@@ -108,6 +113,53 @@ export const ReservationService = {
     }
     toast.success("Reservation updated successfully");
     return response.json();
+  },
+
+  addResidentToReservation: async (
+    reservationId: number,
+    residentId: number
+  ) => {
+    const response = await fetch(
+      `http://localhost:8080/api/reservations/${reservationId}/add-resident/${residentId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      toast.error(error.message);
+      console.log(response);
+    } else {
+      toast.success("Resident added to reservation successfully");
+      return response.json();
+    }
+  },
+  removeResidentFromReservation: async (
+    reservationId: number,
+    residentId: number
+  ) => {
+    const response = await fetch(
+      `http://localhost:8080/api/reservations/${reservationId}/remove-resident/${residentId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      toast.error(error.message);
+      console.log(response);
+    } else {
+      toast.info("Resident was deleted from reservation successfully");
+      return response.json();
+    }
   },
   getAllReservations: async (
     sortedBy: string,

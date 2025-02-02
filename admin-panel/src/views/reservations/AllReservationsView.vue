@@ -18,7 +18,7 @@ const state = reactive({
 });
 const editingRows = ref([]);
 onMounted(() => {
-  fetchReservations("reservationCode", "1990-01-01", formattedCurrentDate(1));
+  fetchReservations("reservationCode", "1990-01-01", formattedCurrentDate(30));
 });
 
 /**

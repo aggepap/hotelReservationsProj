@@ -34,194 +34,200 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
     </svg>
   </button>
   <section class="flex flex-row justify-between items-center">
-    <aside
-      id="sidebar-multi-level-sidebar"
-      class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
-      aria-label="Sidebar"
-    >
-      <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-        <ul class="space-y-2 font-medium">
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <FontAwesomeIcon class="text-gray-600 text-2xl" :icon="faHotel" />
-              <span class="ms-3">Hotel Overview</span>
-            </a>
-          </li>
-          <li>
-            <button
-              type="button"
-              class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-              aria-controls="dropdown-rooms"
-              data-collapse-toggle="dropdown-rooms"
-            >
-              <FontAwesomeIcon
-                class="text-gray-600 text-2xl"
-                :icon="faDoorOpen"
-              />
-
-              <span
-                class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
-                >Rooms</span
+    <Transition name="slide-fade">
+      <aside
+        id="sidebar-multi-level-sidebar"
+        class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        aria-label="Sidebar"
+      >
+        <div
+          class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800"
+        >
+          <ul class="space-y-2 font-medium">
+            <li>
+              <a
+                href="#"
+                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-              <svg
-                class="w-3 h-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 10 6"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m1 1 4 4 4-4"
+                <FontAwesomeIcon
+                  class="text-gray-600 text-2xl"
+                  :icon="faHotel"
                 />
-              </svg>
-            </button>
-            <ul id="dropdown-rooms" class="hidden py-2 space-y-2">
-              <li>
-                <RouterLink
-                  to="/rooms"
-                  class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faKey"
-                  />
-                  View All Rooms</RouterLink
-                >
-              </li>
-              <li>
-                <RouterLink
-                  to="/rooms/add"
-                  class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faPlus"
-                  />Add new Room</RouterLink
-                >
-              </li>
-            </ul>
-          </li>
-          <li>
-            <button
-              type="button"
-              class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-              aria-controls="dropdown-residents"
-              data-collapse-toggle="dropdown-residents"
-            >
-              <FontAwesomeIcon class="text-gray-600 text-2xl" :icon="faBed" />
-
-              <span
-                class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
-                >Residents</span
+                <span class="ms-3">Hotel Overview</span>
+              </a>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                aria-controls="dropdown-rooms"
+                data-collapse-toggle="dropdown-rooms"
               >
-              <svg
-                class="w-3 h-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 10 6"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m1 1 4 4 4-4"
+                <FontAwesomeIcon
+                  class="text-gray-600 text-2xl"
+                  :icon="faDoorOpen"
                 />
-              </svg>
-            </button>
-            <ul id="dropdown-residents" class="hidden py-2 space-y-2">
-              <li>
-                <RouterLink
-                  to="/residents"
-                  class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faUsers"
-                  />All Residents</RouterLink
-                >
-              </li>
-              <li>
-                <RouterLink
-                  to="/residents/add"
-                  class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faPlus"
-                  />Add a Resident</RouterLink
-                >
-              </li>
-            </ul>
-          </li>
-          <li>
-            <button
-              type="button"
-              class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-              aria-controls="dropdown-reservations"
-              data-collapse-toggle="dropdown-reservations"
-            >
-              <FontAwesomeIcon class="text-gray-600 text-2xl" :icon="faKey" />
 
-              <span
-                class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
-                >Reservations</span
-              >
-              <svg
-                class="w-3 h-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 10 6"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m1 1 4 4 4-4"
-                />
-              </svg>
-            </button>
-            <ul id="dropdown-reservations" class="hidden py-2 space-y-2">
-              <li>
-                <RouterLink
-                  to="/reservations"
-                  class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                <span
+                  class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
+                  >Rooms</span
                 >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faFile"
+                <svg
+                  class="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 4 4 4-4"
                   />
-                  All Reservations</RouterLink
-                >
-              </li>
-              <li>
-                <RouterLink
-                  to="/reservations/add"
-                  class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                >
-                  <FontAwesomeIcon
-                    class="text-gray-600 text-2xl"
-                    :icon="faPlus"
-                  />
-                  Add a Reservation</RouterLink
-                >
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </aside>
+                </svg>
+              </button>
+              <ul id="dropdown-rooms" class="hidden py-2 space-y-2">
+                <li>
+                  <RouterLink
+                    to="/rooms"
+                    class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    <FontAwesomeIcon
+                      class="text-gray-600 text-2xl"
+                      :icon="faKey"
+                    />
+                    View All Rooms</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink
+                    to="/rooms/add"
+                    class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    <FontAwesomeIcon
+                      class="text-gray-600 text-2xl"
+                      :icon="faPlus"
+                    />Add new Room</RouterLink
+                  >
+                </li>
+              </ul>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                aria-controls="dropdown-residents"
+                data-collapse-toggle="dropdown-residents"
+              >
+                <FontAwesomeIcon class="text-gray-600 text-2xl" :icon="faBed" />
 
+                <span
+                  class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
+                  >Residents</span
+                >
+                <svg
+                  class="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 4 4 4-4"
+                  />
+                </svg>
+              </button>
+              <ul id="dropdown-residents" class="hidden py-2 space-y-2">
+                <li>
+                  <RouterLink
+                    to="/residents"
+                    class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    <FontAwesomeIcon
+                      class="text-gray-600 text-2xl"
+                      :icon="faUsers"
+                    />All Residents</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink
+                    to="/residents/add"
+                    class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    <FontAwesomeIcon
+                      class="text-gray-600 text-2xl"
+                      :icon="faPlus"
+                    />Add a Resident</RouterLink
+                  >
+                </li>
+              </ul>
+            </li>
+            <li>
+              <button
+                type="button"
+                class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                aria-controls="dropdown-reservations"
+                data-collapse-toggle="dropdown-reservations"
+              >
+                <FontAwesomeIcon class="text-gray-600 text-2xl" :icon="faKey" />
+
+                <span
+                  class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"
+                  >Reservations</span
+                >
+                <svg
+                  class="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 4 4 4-4"
+                  />
+                </svg>
+              </button>
+              <ul id="dropdown-reservations" class="hidden py-2 space-y-2">
+                <li>
+                  <RouterLink
+                    to="/reservations"
+                    class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    <FontAwesomeIcon
+                      class="text-gray-600 text-2xl"
+                      :icon="faFile"
+                    />
+                    All Reservations</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink
+                    to="/reservations/add"
+                    class="flex justify-start gap-2 items-start w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    <FontAwesomeIcon
+                      class="text-gray-600 text-2xl"
+                      :icon="faPlus"
+                    />
+                    Add a Reservation</RouterLink
+                  >
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </Transition>
     <main class="flex items-start h-screen w-full px-4 md:pl-64">
       <div class="mx-auto w-full md:p-6 bg-gray-300 pt-12">
         <RouterView />
@@ -229,3 +235,22 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
     </main>
   </section>
 </template>
+<style scoped>
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+</style>

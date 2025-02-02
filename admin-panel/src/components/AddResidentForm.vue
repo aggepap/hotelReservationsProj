@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { FormKit } from "@formkit/vue";
-import { ref } from "vue";
+
 import { ResidentService } from "@/services/ApiServices";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
+const emit = defineEmits(["residentAdded"]);
 const props = defineProps({
   reservationId: {
     type: Number,
@@ -29,6 +30,12 @@ const handleSubmit = async (data: any) => {
       ResidentService.addResident(data),
       timeout,
     ]);
+    console.log("RESULT", result);
+
+    if (props.reservationId) {
+      emit("residentAdded", result.id);
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   } catch (error: any) {
     if (error.message === "Request timed out") {
       toast.error("Request timed out");

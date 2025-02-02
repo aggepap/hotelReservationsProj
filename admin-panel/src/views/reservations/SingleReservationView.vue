@@ -1,22 +1,31 @@
 <script setup>
 import { RouterLink, useRoute } from "vue-router";
 import { ReservationService } from "@/services/ApiServices";
+import { ResidentService } from "@/services/ApiServices";
 import { onMounted, ref, reactive } from "vue";
 import ProgressSpinner from "primevue/progressspinner";
 import AddResidentForm from "@/components/AddResidentForm.vue";
+import AddResidentToReservation from "@/components/AddResidentToReservation.vue";
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
+import { useToast } from "vue-toastification";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const state = reactive({
   reservationId: "",
   reservation: null,
   loading: true,
+  residents: [],
 });
-const visible = ref(false);
+const visibleAddExisting = ref(false);
+const visibleAddNew = ref(false);
+const toast = useToast();
 
 onMounted(async () => {
   const route = useRoute();
   state.reservationId = Number.parseInt(route.params.id);
   await getReservation(state.reservationId);
+  await getResidents();
   document.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("addResidentButton").click();
   });
@@ -32,6 +41,61 @@ const getReservation = async (id) => {
   } finally {
     state.loading = false;
     console.log(state.reservation.residents);
+  }
+};
+
+const getResidents = async () => {
+  try {
+    const response = await ResidentService.getResidents("lastname");
+    state.residents = response;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    state.loading = false;
+
+    visibleAddExisting.value = false;
+    visibleAddNew.value = false;
+  }
+};
+
+const removeResident = async (id) => {
+  console.log(id);
+  try {
+    const response = await ReservationService.removeResidentFromReservation(
+      state.reservationId,
+      id
+    );
+    state.reservation.residents = state.reservation.residents.filter(
+      (resident) => resident.id !== id
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleResidentAdded = async (residentId) => {
+  console.log(residentId);
+
+  const addedResident = state.residents.find(
+    (resident) => resident.id === residentId
+  );
+  if (addedResident) {
+    await state.reservation.residents.push(addedResident);
+    visibleAddExisting.value = false;
+  }
+};
+
+const handleNewResidentAdded = async (residentId) => {
+  try {
+    const response = await ReservationService.getReservationById(
+      state.reservationId
+    );
+    state.reservation = response;
+  } catch (error) {
+    console.error("Error refreshing reservation:", error);
+    toast.error("Failed to refresh resident list.");
+  } finally {
+    visibleAddNew.value = false;
   }
 };
 </script>
@@ -126,25 +190,68 @@ const getReservation = async (id) => {
         </div>
       </div>
       <aside class="bg-gray-100 w-1/4 p-4">
-        <h2 class="text-xl font-bold mb-4 text-black">Residents</h2>
-        <RouterLink
-          v-for="resident in state.reservation.residents"
-          :key="resident.id"
-          :to="`/residents/${resident.id}`"
-          class="text-black"
-        >
-          {{ resident.firstname }} {{ resident.lastname }}
-        </RouterLink>
+        <div class="flex flex-col h-full">
+          <h2 class="text-xl font-bold mb-4 text-black">Residents</h2>
+          <ul class="justify-self-start">
+            <li
+              class="flex justify-between items-center mb-2"
+              v-for="resident in state.reservation.residents"
+              :key="resident.id"
+            >
+              <RouterLink
+                :to="`/residents/${resident.id}`"
+                class="text-black text-lg hover:border-b-2 hover:border-black"
+              >
+                {{ resident.firstname }} {{ resident.lastname }}
+              </RouterLink>
+              <FontAwesomeIcon
+                @click="removeResident(resident.id)"
+                class="text-black cursor-pointer p-2"
+                :icon="faXmark"
+              />
+            </li>
+          </ul>
 
-        <Button label="Add New Resident" @click="visible = true" />
-        <Dialog
-          v-model:visible="visible"
-          modal
-          header="Edit Profile"
-          :style="{ width: '40rem' }"
-        >
-          <AddResidentForm :reservationId="state.reservation.id" />
-        </Dialog>
+          <div class="flex flex-col h-full justify-self-end mt-auto gap-4">
+            <Button
+              class="justify-self-end mt-auto"
+              severity="contrast"
+              variant="raised"
+              label="Add Existing Resident"
+              @click="visibleAddExisting = true"
+            />
+            <Dialog
+              v-model:visible="visibleAddExisting"
+              modal
+              header="Add Resident"
+              :style="{ width: '40rem' }"
+            >
+              <AddResidentToReservation
+                :residents="state.residents"
+                :reservationId="state.reservation.id"
+                @residentAdded="handleResidentAdded"
+              />
+            </Dialog>
+
+            <Button
+              severity="contrast"
+              variant="outlined"
+              label="Add New Resident"
+              @click="visibleAddNew = true"
+            />
+            <Dialog
+              v-model:visible="visibleAddNew"
+              modal
+              header="Add Resident"
+              :style="{ width: '40rem' }"
+            >
+              <AddResidentForm
+                @residentAdded="handleNewResidentAdded"
+                :reservationId="state.reservationId"
+              />
+            </Dialog>
+          </div>
+        </div>
       </aside>
     </main>
   </section>
