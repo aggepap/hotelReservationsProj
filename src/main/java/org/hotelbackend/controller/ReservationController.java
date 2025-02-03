@@ -1,19 +1,25 @@
 package org.hotelbackend.controller;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import org.hotelbackend.core.Mapper;
 import org.hotelbackend.dto.ReservationInsertDTO;
 import org.hotelbackend.dto.ReservationReadOnlyDTO;
 
 import org.hotelbackend.dto.ReservationUpdateDTO;
+import org.hotelbackend.dto.ResidentReadOnlyDTO;
 import org.hotelbackend.exceptions.AppObjectAlreadyExistsException;
 import org.hotelbackend.exceptions.AppObjectInvalidArgumentException;
 import org.hotelbackend.exceptions.AppObjectNotFoundException;
 import org.hotelbackend.filters.Paginated;
+import org.hotelbackend.model.Reservation;
+import org.hotelbackend.model.Resident;
 import org.hotelbackend.service.ReservationService;
+import org.hotelbackend.service.ResidentService;
 import org.jboss.logging.Logger;
 
 import java.time.LocalDate;
@@ -24,6 +30,10 @@ public class ReservationController {
 
     @Inject
     private ReservationService reservationService;
+    @Inject
+    private ResidentService residentService;
+    @Inject
+    private Mapper mapper;
 
     @POST
     @Path("/add")
@@ -47,7 +57,7 @@ public class ReservationController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(@PathParam("id") Long id) {
-        ReservationReadOnlyDTO fetched = reservationService.getReservationById(id);
+        ReservationReadOnlyDTO fetched = mapper.mapToReservationReadOnlyDTO(reservationService.getReservationById(id));
         return Response.status(Response.Status.OK).entity(fetched).build();
     }
 
@@ -79,6 +89,34 @@ public class ReservationController {
             ReservationReadOnlyDTO updatedReservation = reservationService.updateReservation(dto);
             return Response.status(Response.Status.OK).entity(updatedReservation).build();
     }
+
+    @PATCH
+    @Path("/{reservationId}/add-resident/{residentId}")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addResidentToReservation (@PathParam("reservationId") Long reservationId,
+                                              @PathParam("residentId")  Long residentId) throws AppObjectNotFoundException {
+        Reservation reservation = reservationService.getReservationById(reservationId);
+        Resident resident = residentService.getById(residentId);
+        reservation.addResidentToReservation(resident);
+        ReservationReadOnlyDTO reservationToReturn = mapper.mapToReservationReadOnlyDTO(reservation);
+        return Response.status(Response.Status.OK).entity(reservationToReturn).build();
+    }
+    @PATCH
+    @Path("/{reservationId}/remove-resident/{residentId}")
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeResident (@PathParam("reservationId") Long reservationId,
+                                              @PathParam("residentId")  Long residentId) throws AppObjectNotFoundException {
+        Reservation reservation = reservationService.getReservationById(reservationId);
+        Resident resident = residentService.getById(residentId);
+        reservation.removeResidentFromReservation(resident);
+        ReservationReadOnlyDTO reservationToReturn = mapper.mapToReservationReadOnlyDTO(reservation);
+        return Response.status(Response.Status.OK).entity(reservationToReturn).build();
+    }
+
 
     @PATCH
     @Path("/checkin")

@@ -1,54 +1,33 @@
-<script setup lang="ts">
+<script setup>
 import { FormKit } from "@formkit/vue";
-import { ResidentService } from "@/services/ApiServices";
-import { useToast } from "vue-toastification";
+import { ref, watch } from "vue";
 
-const toast = useToast();
-const emit = defineEmits(["residentAdded"]);
 const props = defineProps({
-  reservationId: {
-    type: Number,
-    required: false,
-    default: null,
+  resident: {
+    required: true,
   },
 });
 
-const handleSubmit = async (data: any) => {
-  if (props.reservationId) {
-    data.reservationId = props.reservationId;
-    console.log("RESERVATION ID", data.reservationId);
-  }
-  const timeout = new Promise((_, reject) => {
-    setTimeout(() => {
-      reject(new Error("Request timed out"));
-    }, 2000);
-  });
-
-  try {
-    const result = await Promise.race([
-      ResidentService.addResident(data),
-      timeout,
-    ]);
-    console.log("RESULT", result);
-
-    if (props.reservationId) {
-      emit("residentAdded", result.id);
-    }
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  } catch (error: any) {
-    if (error.message === "Request timed out") {
-      toast.error("Request timed out");
-    } else {
-      toast.error(error.message);
-    }
-  }
-};
+const formData = ref({
+  firstname: props.resident.firstname,
+  lastname: props.resident.lastname,
+  vat: props.resident.vat,
+  idNumber: props.resident.idNumber,
+  countryCode: props.resident.countryCode,
+  birthDate: props.resident.birthDate,
+  gender: props.resident.gender,
+  phoneNumber: props.resident.phoneNumber,
+  address: props.resident.address,
+  email: props.resident.email,
+});
+console.log(props.resident);
 </script>
+
 <template>
   <div class="bg-white rounded-md grid place-items-center py-10 px-10">
-    <FormKit type="form" submit-label="Add Resident" @submit="handleSubmit">
+    <FormKit type="form" v-model="formData" submit-label="Update Resident">
       <h2 class="text-black text-3xl text-center leading-5 font-semibold mb-8">
-        Add new Resident
+        Update Resident Info
       </h2>
 
       <div class="flex gap-4">

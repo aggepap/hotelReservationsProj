@@ -2,6 +2,7 @@
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import { reactive, ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { ResidentService } from "@/services/ApiServices";
 import type { Resident } from "@/interfaces/ResidentInterfaces";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
@@ -11,7 +12,10 @@ import InputIcon from "primevue/inputicon";
 import IconField from "primevue/iconfield";
 import CountryFlag from "vue-country-flag-next";
 
+const router = useRouter();
 const filters = ref();
+const isVisible = ref(false);
+
 const initFilters = () => {
   filters.value = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -53,6 +57,7 @@ let orderBy = "lastname";
 onMounted(() => {
   fetchCustomers(orderBy);
   console.log(state.residents);
+  isVisible.value = true;
 });
 
 const fetchCustomers = async (orderBy: string) => {
@@ -67,168 +72,136 @@ const fetchCustomers = async (orderBy: string) => {
     state.loading = false;
   }
 };
+const onRowSelect = (event: any) => {
+  router.push({
+    name: "singleResident",
+    params: {
+      id: event.data.id,
+    },
+  });
+};
+
 const clearFilter = () => {
   initFilters();
 };
 </script>
 
 <template>
-  <h2 class="text-black text-3xl text-center leading-5 font-semibold mb-8">
-    Residents
-  </h2>
-  <div class="card">
-    <DataTable
-      :value="state.residents"
-      paginator
-      showGridlines
-      :rows="10"
-      dataKey="id"
-      filterDisplay="menu"
-      :loading="state.loading"
-      :filters="filters"
-      :globalFilterFields="[
-        'firstname',
-        'lastname',
-        'countryCode',
-        'roomNumber',
-      ]"
-    >
-      <template #header>
-        <div class="flex justify-between">
-          <Button
-            type="button"
-            icon="pi pi-filter-slash"
-            label="Clear"
-            outlined
-            @click="clearFilter()"
-          />
-          <IconField>
-            <InputIcon>
-              <i class="pi pi-search" />
-            </InputIcon>
-            <InputText
-              v-model="filters['global'].value"
-              placeholder="Keyword Search"
-            />
-          </IconField>
-        </div>
-      </template>
-      <template #empty> No customers found. </template>
-      <template #loading> Loading customers data. Please wait. </template>
-      <Column
-        field="firstname"
-        sortable
-        header="Firstname"
-        style="min-width: 12rem"
-      >
-        <template #filter="{ filterModel }">
-          <InputText
-            v-model="filterModel.value"
-            type="text"
-            placeholder="Search by firstname"
-          />
-        </template>
-      </Column>
-      <Column
-        field="lastname"
-        sortable
-        header="Lastname"
-        style="min-width: 12rem"
-      >
-        <template #filter="{ filterModel }">
-          <InputText
-            v-model="filterModel.value"
-            type="text"
-            placeholder="Search by Lastname"
-          />
-        </template>
-      </Column>
-      <Column
-        field="countryCode"
-        sortable
-        header="Country"
-        style="min-width: 12rem"
-      >
-        <template #body="{ data }">
-          <div class="flex gap-4 items-end">
-            <country-flag :country="data.countryCode" />
+  <Transition name="slide-fade">
+    <main v-if="isVisible">
+      <h2 class="text-black text-3xl text-center leading-5 font-semibold mb-8">
+        Residents
+      </h2>
+      <div class="card">
+        <DataTable
+          @rowSelect="onRowSelect"
+          selectionMode="single"
+          :value="state.residents"
+          paginator
+          showGridlines
+          :rows="10"
+          dataKey="id"
+          filterDisplay="menu"
+          :loading="state.loading"
+          :filters="filters"
+          :globalFilterFields="[
+            'firstname',
+            'lastname',
+            'countryCode',
+            'roomNumber',
+          ]"
+        >
+          <template #header>
+            <div class="flex justify-between">
+              <Button
+                type="button"
+                icon="pi pi-filter-slash"
+                label="Clear"
+                outlined
+                @click="clearFilter()"
+              />
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-search" />
+                </InputIcon>
+                <InputText
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                />
+              </IconField>
+            </div>
+          </template>
+          <template #empty> No customers found. </template>
+          <template #loading> Loading customers data. Please wait. </template>
+          <Column
+            field="firstname"
+            sortable
+            header="Firstname"
+            style="min-width: 12rem"
+          >
+            <template #filter="{ filterModel }">
+              <InputText
+                v-model="filterModel.value"
+                type="text"
+                placeholder="Search by firstname"
+              />
+            </template>
+          </Column>
+          <Column
+            field="lastname"
+            sortable
+            header="Lastname"
+            style="min-width: 12rem"
+          >
+            <template #filter="{ filterModel }">
+              <InputText
+                v-model="filterModel.value"
+                type="text"
+                placeholder="Search by Lastname"
+              />
+            </template>
+          </Column>
+          <Column
+            field="countryCode"
+            sortable
+            header="Country"
+            style="min-width: 12rem"
+          >
+            <template #body="{ data }">
+              <div class="flex gap-4 items-end">
+                <country-flag :country="data.countryCode" />
 
-            <span>{{ data.countryCode }}</span>
-          </div>
-        </template>
-        <template #filter="{ filterModel }">
-          <InputText
-            v-model="filterModel.value"
-            type="text"
-            placeholder="Search by Lastname"
-          />
-        </template>
-      </Column>
-      <Column
-        field="roomNumber"
-        sortable
-        header="Room Number"
-        style="min-width: 12rem"
+                <span>{{ data.countryCode }}</span>
+              </div>
+            </template>
+            <template #filter="{ filterModel }">
+              <InputText
+                v-model="filterModel.value"
+                type="text"
+                placeholder="Search by Lastname"
+              />
+            </template>
+          </Column>
+          <Column
+            field="roomNumber"
+            sortable
+            header="Room Number"
+            style="min-width: 12rem"
+          >
+            <template #body="{ data }">
+              <span>{{ data.roomNumber }}</span>
+            </template>
+            <template #filter="{ filterModel }">
+              <InputText
+                v-model="filterModel.value"
+                type="text"
+                placeholder="Search by Room Number"
+              />
+            </template>
+          </Column>
+        </DataTable>
+      </div>
       >
-        <template #body="{ data }">
-          <span>{{ data.roomNumber }}</span>
-        </template>
-        <template #filter="{ filterModel }">
-          <InputText
-            v-model="filterModel.value"
-            type="text"
-            placeholder="Search by Room Number"
-          />
-        </template>
-      </Column>
-
-      <!-- <Column
-        field="activity"
-        header="Activity"
-        :showFilterMatchModes="false"
-        style="min-width: 12rem"
-      >
-        <template #body="{ data }">
-          <ProgressBar
-            :value="data.activity"
-            :showValue="false"
-            style="height: 6px"
-          ></ProgressBar>
-        </template>
-        <template #filter="{ filterModel }">
-          <Slider v-model="filterModel.value" range class="m-4"></Slider>
-          <div class="flex items-center justify-between px-2">
-            <span>{{ filterModel.value ? filterModel.value[0] : 0 }}</span>
-            <span>{{ filterModel.value ? filterModel.value[1] : 100 }}</span>
-          </div>
-        </template>
-      </Column>
-      <Column
-        field="verified"
-        header="Verified"
-        dataType="boolean"
-        bodyClass="text-center"
-        style="min-width: 8rem"
-      >
-        <template #body="{ data }">
-          <i
-            class="pi"
-            :class="{
-              'pi-check-circle text-green-500 ': data.verified,
-              'pi-times-circle text-red-500': !data.verified,
-            }"
-          ></i>
-        </template>
-        <template #filter="{ filterModel }">
-          <label for="verified-filter" class="font-bold"> Verified </label>
-          <Checkbox
-            v-model="filterModel.value"
-            :indeterminate="filterModel.value === null"
-            binary
-            inputId="verified-filter"
-          />
-        </template>
-      </Column> -->
-    </DataTable>
-  </div>
+    </main>
+  </Transition>
 </template>

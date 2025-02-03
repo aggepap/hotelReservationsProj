@@ -48,7 +48,6 @@ export const ResidentService = {
       },
       body: JSON.stringify(resident),
     });
-    console.log(response);
 
     if (!response.ok) {
       const error = await response.json();

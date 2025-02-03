@@ -11,7 +11,7 @@ import InputIcon from "primevue/inputicon";
 import IconField from "primevue/iconfield";
 
 const router = useRouter();
-
+const isVisible = ref(false);
 const state = reactive({
   reservations: [],
   loading: true,
@@ -19,6 +19,7 @@ const state = reactive({
 const editingRows = ref([]);
 onMounted(() => {
   fetchReservations("reservationCode", "1990-01-01", formattedCurrentDate(30));
+  isVisible.value = true;
 });
 
 /**
@@ -140,164 +141,168 @@ const onRowSelect = (event: any) => {
 </script>
 
 <template>
-  <section class="">
-    <h2 class="text-black text-3xl text-center leading-5 font-semibold mb-8">
-      Reservations
-    </h2>
+  <Transition name="slide-fade">
+    <section v-if="isVisible">
+      <h2 class="text-black text-3xl text-center leading-5 font-semibold mb-8">
+        Reservations
+      </h2>
 
-    <div class="dateForm grid place-items-center">
-      <FormKit
-        type="form"
-        :actions="false"
-        @submit="handleSubmit"
-        submit-label="Search"
-      >
-        <div class="flex justify-center items-center gap-2">
-          <FormKit
-            name="fromDate"
-            type="date"
-            :value="formattedCurrentDate()"
-            label="From"
-            validation="required|"
-            validation-visibility="live"
-          />
-          <FormKit
-            type="date"
-            name="toDate"
-            :value="formattedCurrentDate(10)"
-            label="To"
-            validation="required"
-            validation-visibility="live"
-          />
-          <FormKit
-            type="submit"
-            :classes="{
-              outer: '!-mb-2',
-            }"
-            label="Submit"
-          />
-        </div>
-      </FormKit>
-    </div>
-
-    <div class="">
-      <DataTable
-        @rowSelect="onRowSelect"
-        :value="state.reservations"
-        selectionMode="single"
-        editMode="row"
-        v-model:editingRows="editingRows"
-        @row-edit-save="onRowEditSave"
-        resizableColumns
-        columnResizeMode="fit"
-        paginator
-        showGridlines
-        :rows="10"
-        dataKey="id"
-        :filters="filters"
-        filterDisplay="menu"
-        :loading="state.loading"
-        :globalFilterFields="[
-          'reservationCode',
-          'reservationBookedDate',
-          'reservationStartDate',
-          'roomNumber',
-          'firstResidentLastName',
-        ]"
-      >
-        <template #header>
-          <div class="flex justify-between">
-            <Button
-              type="button"
-              icon="pi pi-filter-slash"
-              label="Clear"
-              outlined
-              @click="clearFilter()"
+      <div class="dateForm grid place-items-center">
+        <FormKit
+          type="form"
+          :actions="false"
+          @submit="handleSubmit"
+          submit-label="Search"
+        >
+          <div class="flex justify-center items-center gap-2">
+            <FormKit
+              name="fromDate"
+              type="date"
+              :value="formattedCurrentDate()"
+              label="From"
+              validation="required|"
+              validation-visibility="live"
             />
-            <IconField>
-              <InputIcon>
-                <i class="pi pi-search" />
-              </InputIcon>
-              <InputText
-                v-model="filters['global'].value"
-                placeholder="Keyword Search"
-              />
-            </IconField>
+            <FormKit
+              type="date"
+              name="toDate"
+              :value="formattedCurrentDate(10)"
+              label="To"
+              validation="required"
+              validation-visibility="live"
+            />
+            <FormKit
+              type="submit"
+              :classes="{
+                outer: '!-mb-2',
+              }"
+              label="Submit"
+            />
           </div>
-        </template>
-        <template #empty> No Reservations found. </template>
-        <template #loading> Loading Reservations data. Please wait. </template>
-        <Column
-          field="reservationCode"
-          sortable
-          header="Reservation Code"
-          style="min-width: 5rem"
+        </FormKit>
+      </div>
+
+      <div class="">
+        <DataTable
+          @rowSelect="onRowSelect"
+          :value="state.reservations"
+          selectionMode="single"
+          editMode="row"
+          v-model:editingRows="editingRows"
+          @row-edit-save="onRowEditSave"
+          resizableColumns
+          columnResizeMode="fit"
+          paginator
+          showGridlines
+          :rows="10"
+          dataKey="id"
+          :filters="filters"
+          filterDisplay="menu"
+          :loading="state.loading"
+          :globalFilterFields="[
+            'reservationCode',
+            'reservationBookedDate',
+            'reservationStartDate',
+            'roomNumber',
+            'firstResidentLastName',
+          ]"
         >
-          <template #body="{ data }">
-            {{ data.reservationCode.slice(0, 13) }}
+          <template #header>
+            <div class="flex justify-between">
+              <Button
+                type="button"
+                icon="pi pi-filter-slash"
+                label="Clear"
+                outlined
+                @click="clearFilter()"
+              />
+              <IconField>
+                <InputIcon>
+                  <i class="pi pi-search" />
+                </InputIcon>
+                <InputText
+                  v-model="filters['global'].value"
+                  placeholder="Keyword Search"
+                />
+              </IconField>
+            </div>
           </template>
-        </Column>
-        <Column
-          field="reservationBookedDate"
-          sortable
-          header="Booked Date"
-          style="min-width: 5rem"
-        >
-          <template #body="{ data }">
-            {{ formatDate(data.reservationBookedDate) }}
+          <template #empty> No Reservations found. </template>
+          <template #loading>
+            Loading Reservations data. Please wait.
           </template>
-        </Column>
-        <Column
-          field="reservationStartDate"
-          sortable
-          header="Start Date"
-          style="min-width: 5rem"
-        >
-          <template #editor="{ data, field }">
-            <InputText type="date" v-model="data[field]" fluid />
-          </template>
-          <template #body="{ data }">
-            {{ formatDate(data.reservationStartDate) }}
-          </template>
-        </Column>
-        <Column
-          field="reservationEndDate"
-          sortable
-          header="End Date"
-          style="min-width: 5rem"
-        >
-          <template #editor="{ data, field }">
-            <InputText type="date" v-model="data[field]" fluid />
-          </template>
-          <template #body="{ data }">
-            {{ formatDate(data.reservationEndDate) }}
-          </template>
-        </Column>
-        <Column
-          field="firstResidentLastName"
-          sortable
-          header="Residents"
-          style="min-width: 5rem"
-        >
-        </Column>
-        <Column
-          field="roomNumber"
-          sortable
-          header="Room Number"
-          style="min-width: 5rem"
-        >
-          <template #editor="{ data, field }">
-            <InputText v-model="data[field]" fluid />
-          </template>
-        </Column>
-        <Column
-          :rowEditor="true"
-          style="width: 5%; min-width: 2rem"
-          bodyStyle="text-align:center"
-        ></Column>
-      </DataTable>
-    </div>
-  </section>
+          <Column
+            field="reservationCode"
+            sortable
+            header="Reservation Code"
+            style="min-width: 5rem"
+          >
+            <template #body="{ data }">
+              {{ data.reservationCode.slice(0, 13) }}
+            </template>
+          </Column>
+          <Column
+            field="reservationBookedDate"
+            sortable
+            header="Booked Date"
+            style="min-width: 5rem"
+          >
+            <template #body="{ data }">
+              {{ formatDate(data.reservationBookedDate) }}
+            </template>
+          </Column>
+          <Column
+            field="reservationStartDate"
+            sortable
+            header="Start Date"
+            style="min-width: 5rem"
+          >
+            <template #editor="{ data, field }">
+              <InputText type="date" v-model="data[field]" fluid />
+            </template>
+            <template #body="{ data }">
+              {{ formatDate(data.reservationStartDate) }}
+            </template>
+          </Column>
+          <Column
+            field="reservationEndDate"
+            sortable
+            header="End Date"
+            style="min-width: 5rem"
+          >
+            <template #editor="{ data, field }">
+              <InputText type="date" v-model="data[field]" fluid />
+            </template>
+            <template #body="{ data }">
+              {{ formatDate(data.reservationEndDate) }}
+            </template>
+          </Column>
+          <Column
+            field="firstResidentLastName"
+            sortable
+            header="Residents"
+            style="min-width: 5rem"
+          >
+          </Column>
+          <Column
+            field="roomNumber"
+            sortable
+            header="Room Number"
+            style="min-width: 5rem"
+          >
+            <template #editor="{ data, field }">
+              <InputText v-model="data[field]" fluid />
+            </template>
+          </Column>
+          <Column
+            :rowEditor="true"
+            style="width: 5%; min-width: 2rem"
+            bodyStyle="text-align:center"
+          ></Column>
+        </DataTable>
+      </div>
+    </section>
+  </Transition>
 </template>
 
 <style scoped>

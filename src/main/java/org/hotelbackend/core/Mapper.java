@@ -51,14 +51,15 @@ public class Mapper {
                 dto.getBirthDate(), dto.getAddress(), dto.getPhoneNumber(),dto.getEmail(),dto.getCountryCode(),dto.getGender(),null,null,null,null);
     }
     public ResidentReadOnlyDTO mapToResidentReadOnlyDTO(Resident resident){
-        String reservationCode;
-        String residentRoomNumber;
-        if(resident.getReservation() != null){
+        String reservationCode= null;
+        String residentRoomNumber= null;
+        if (resident.getReservation() != null) {
             reservationCode = resident.getReservation().getReservationCode();
-            residentRoomNumber = resident.getReservation().getRoom().getRoomNumber();
-        }else{
-            reservationCode = null;
-            residentRoomNumber = null;
+
+            // Check if Room exists within Reservation
+            if (resident.getReservation().getRoom() != null) {
+                residentRoomNumber = resident.getReservation().getRoom().getRoomNumber();
+            }
         }
 
         return new ResidentReadOnlyDTO(resident.getId(), resident.getFirstname(),resident.getLastname(),

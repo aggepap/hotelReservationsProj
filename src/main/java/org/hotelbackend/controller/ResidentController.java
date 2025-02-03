@@ -11,6 +11,7 @@ import org.hotelbackend.core.Mapper;
 import org.hotelbackend.dto.ResidentInsertDTO;
 import org.hotelbackend.dto.ResidentReadOnlyDTO;
 import org.hotelbackend.exceptions.AppObjectAlreadyExistsException;
+import org.hotelbackend.exceptions.AppObjectNotFoundException;
 import org.hotelbackend.filters.Paginated;
 import org.hotelbackend.model.Reservation;
 import org.hotelbackend.model.Resident;
@@ -48,7 +49,7 @@ public class ResidentController {
         //Set residents roomNumber if available
         Resident newResident = residentService.addNewResident(dto);
         if(dto.getReservationId() != null){
-            Reservation reservation = Reservation.findById(dto.getReservationId());
+            Reservation reservation = reservationService.getReservationById(dto.getReservationId());
             reservation.addResidentToReservation(newResident);
 
         }
@@ -78,6 +79,20 @@ public class ResidentController {
     ){
         List<ResidentReadOnlyDTO> residentsList = residentService.getAllResidents(sortedBy);
         return Response.status(Response.Status.OK).entity(residentsList).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getResidentById(
+            @PathParam("id") Long id
+    ) throws AppObjectNotFoundException {
+        Resident resident = residentService.getById(id);
+        if(resident == null){
+        }
+        ResidentReadOnlyDTO residentToReturn = mapper.mapToResidentReadOnlyDTO( residentService.getById(id));
+        return Response.status(Response.Status.OK).entity(residentToReturn).build();
     }
 
 }

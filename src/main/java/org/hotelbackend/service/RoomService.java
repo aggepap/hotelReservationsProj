@@ -4,6 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.hotelbackend.core.Mapper;
 import org.hotelbackend.dto.RoomInsertDTO;
 import org.hotelbackend.dto.RoomReadOnlyDTO;
@@ -25,7 +26,7 @@ public class RoomService {
     @Inject
     private Mapper mapper;
 
-
+@Transactional
     public RoomReadOnlyDTO addNewRoom(RoomInsertDTO dto){
         System.out.println(dto.getHasSeaView());
         return this.roomRepository.addRoom(dto);

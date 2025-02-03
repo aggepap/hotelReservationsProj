@@ -65,6 +65,11 @@ public class Reservation extends PanacheEntityBase {
         residents.add(resident);
         resident.setReservation(this);
     }
+    @Transactional
+    public void removeResidentFromReservation(Resident resident){
+        residents.remove(resident);
+        resident.setReservation(null);
+    }
 
     @PrePersist
     protected void onCreate(){

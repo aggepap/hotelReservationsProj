@@ -103,7 +103,7 @@ public class ReservationService {
         return mapper.mapToReservationReadOnlyDTO(reservationToUpdate);
     }
 
-    @Transactional
+
     public Paginated<ReservationReadOnlyDTO> GetAllReservationsPaginated(int pageIndex, int pageSize, String sortedBy, LocalDate fromDate, LocalDate toDate, Boolean isActive){
         PanacheQuery<Reservation> query = null;
         if(isActive){
@@ -122,14 +122,14 @@ public class ReservationService {
                     toDate
             );
         }
-
-
+        query.page(pageIndex, pageSize);
+        List<Reservation> reservations = query.list();
         long totalCount = query.count();
-        List<ReservationReadOnlyDTO> data = query.page(pageIndex, pageSize).stream().map(mapper::mapToReservationReadOnlyDTO).toList();
+        List<ReservationReadOnlyDTO> data = reservations.stream().map(mapper::mapToReservationReadOnlyDTO).toList();
         return new Paginated<>(data, totalCount);
     }
 
-    @Transactional
+
     public List<ReservationReadOnlyDTO> GetAllReservations(String sortedBy, LocalDate fromDate, LocalDate toDate){
         PanacheQuery<Reservation> query = Reservation.find(
                 "reservationStartDate >= ?1 and reservationStartDate <= ?2",
@@ -140,6 +140,7 @@ public class ReservationService {
         return query.stream().map(mapper::mapToReservationReadOnlyDTO).toList();
 
     }
+
 
     public List<ReservationReadOnlyDTO> getAllActiveReservations(String sortedBy){
         PanacheQuery<Reservation> query = Reservation.find("isActive", true,Sort.by(sortedBy));
@@ -165,8 +166,8 @@ public class ReservationService {
        return mapper.mapToReservationReadOnlyDTO(reservationRepository.getReservationByResCode(reservationCode));
     }
 
-    public ReservationReadOnlyDTO getReservationById(Long id) {
-        return mapper.mapToReservationReadOnlyDTO(reservationRepository.findById(id));
+    public Reservation getReservationById(Long id) {
+        return reservationRepository.findById(id);
     }
 
     private static List<LocalDate> getDatesBetween(LocalDate startDate, LocalDate endDate) throws AppObjectInvalidArgumentException {
